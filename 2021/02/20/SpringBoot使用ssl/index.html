@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://windmo.github.io/null">
 <meta property="article:published_time" content="2021-02-20T05:55:49.979Z">
-<meta property="article:modified_time" content="2021-03-11T02:45:51.924Z">
+<meta property="article:modified_time" content="2021-03-11T02:48:32.729Z">
 <meta property="article:author" content="WindShadow-mo">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://windmo.github.io/null">
@@ -126,7 +126,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~4.62K
+                            ~4.61K
                         
                         字
                         
@@ -155,12 +155,8 @@
 <li>-keystore 密钥库的路径及名称</li>
 </ul>
 <p>例：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias &lt;密钥库别名&gt; -storetype &lt;密钥库类型&gt; -keyalg &lt;密钥算法名称&gt; -keystore &lt;密钥库路径&gt; # 根据提示挨个输入参数</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias test -storetype jks -keyalg RSA -keystore test-keystore.jks # 输入参数完毕后将在当前路径生成证书</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias &lt;密钥库别名&gt; -storetype &lt;密钥库类型&gt; -keystore &lt;密钥库路径&gt; -keyalg &lt;密钥算法名称&gt; -keysize &lt;密钥位大小&gt; -storepass &lt;密钥库口令&gt; -keypass &lt;密钥口令&gt;  -validity &lt;有效天数&gt; -dname &lt;dname&gt;  # 一次性搞定</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 直接在当前路径生成证书，CN可填多个如：<span class="string">&quot;CN=test1.com, CN=test2.com, OU=test.com, O=ChinaHonker, L=Beijing, S=Beijing, C=086&quot;</span></span></span><br><span class="line">keytool -genkey -alias test -storetype jks -keystore test-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456 -keypass 123456 -validity 3650     -dname &quot;CN=test.com, OU=test.com,O=ChinaHonker, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 根据提示挨个输入参数</span></span><br><span class="line">keytool -genkey -alias &lt;密钥库别名&gt; -storetype &lt;密钥库类型&gt; -keyalg &lt;密钥算法名称&gt; -keystore &lt;密钥库路径&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输入参数完毕后将在当前路径生成证书</span></span><br><span class="line">keytool -genkey -alias test -storetype jks -keyalg RSA -keystore test-keystore.jks </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 一次性搞定</span></span><br><span class="line">keytool -genkey -alias &lt;密钥库别名&gt; -storetype &lt;密钥库类型&gt; -keystore &lt;密钥库路径&gt; -keyalg &lt;密钥算法名称&gt; -keysize &lt;密钥位大小&gt; -storepass &lt;密钥库口令&gt; -keypass &lt;密钥口令&gt;  -validity &lt;有效天数&gt; -dname &lt;dname&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接在当前路径生成证书，CN可填多个如：<span class="string">&quot;CN=test1.com, CN=test2.com, OU=test.com, O=ChinaHonker, L=Beijing, S=Beijing, C=086&quot;</span></span></span><br><span class="line">keytool -genkey -alias test -storetype jks -keystore test-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456 -keypass 123456 -validity 3650     -dname &quot;CN=test.com, OU=test.com,O=ChinaHonker, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
 
 <h4 id="dname详解"><a href="#dname详解" class="headerlink" title="dname详解"></a>dname详解</h4><ul>
 <li>CN：Common Name 公用名称，对于 SSL 证书，一般为网站域名；而对于代码签名证书则为申请单位名称；而对于客户端证书则为证书申请者的姓名</li>
