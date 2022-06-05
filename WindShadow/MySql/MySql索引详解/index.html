@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/jx.jpg">
+  <title>MySql索引详解 | 风的影子</title>
+  <meta name="author" content="WindShadow-mo" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="了解索引之前先了解一下约束。 约束（constraint）约束实际上就是表中数据的限制条件 ，表在设计的时候加入约束的目的就是为了保证表中的记录完整和有效 ，常见约束如下 非空约束（not null）约束的字段不能为null 唯一性约束（unique）约束的字段是唯一的（可以为null），Mysql会为该字段会自动创建索引。 唯一性约束也称列级约束。 主健约束（primary key(简称PK)）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySql索引详解">
+<meta property="og:url" content="https://windmo.github.io/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="了解索引之前先了解一下约束。 约束（constraint）约束实际上就是表中数据的限制条件 ，表在设计的时候加入约束的目的就是为了保证表中的记录完整和有效 ，常见约束如下 非空约束（not null）约束的字段不能为null 唯一性约束（unique）约束的字段是唯一的（可以为null），Mysql会为该字段会自动创建索引。 唯一性约束也称列级约束。 主健约束（primary key(简称PK)）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://windmo.github.io/images/jx.jpg">
+<meta property="article:published_time" content="2021-07-14T08:20:46.904Z">
+<meta property="article:modified_time" content="2021-07-18T12:19:58.468Z">
+<meta property="article:author" content="WindShadow-mo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://windmo.github.io/images/jx.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-file"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/about"><i class="fa fa-paper-plane"></i>关于</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>WindShadow</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/jx0.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">风的影子</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/">web基础扫盲</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/JVM/Garbage-Collection/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/%E4%BD%95%E4%B8%BAJava%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/"><i class="fa  fa-book"></i> 何为Java线程中断</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa  fa-book"></i> Java线程池原理（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/"><i class="fa  fa-book"></i> MySql索引详解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E4%BA%8B%E5%8A%A1/"><i class="fa  fa-book"></i> MySql事务</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">MySql索引详解</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2021-07-14</li>
+                <li><i class="fa fa-user"></i> 作者 WindShadow-mo</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~4.88K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1626610798468"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+            <hr />
+            <p>了解索引之前先了解一下约束。</p>
+<h2 id="约束（constraint）"><a href="#约束（constraint）" class="headerlink" title="约束（constraint）"></a>约束（constraint）</h2><p>约束实际上就是表中数据的限制条件 ，表在设计的时候加入约束的目的就是为了保证表中的记录完整和有效 ，常见约束如下</p>
+<h3 id="非空约束（not-null）"><a href="#非空约束（not-null）" class="headerlink" title="非空约束（not null）"></a>非空约束（not null）</h3><p>约束的字段不能为null</p>
+<h3 id="唯一性约束（unique）"><a href="#唯一性约束（unique）" class="headerlink" title="唯一性约束（unique）"></a>唯一性约束（unique）</h3><p>约束的字段是唯一的（可以为null），Mysql会为该字段会自动创建索引。</p>
+<p>唯一性约束也称<strong>列级约束</strong>。</p>
+<h3 id="主健约束（primary-key-简称PK-）"><a href="#主健约束（primary-key-简称PK-）" class="headerlink" title="主健约束（primary key(简称PK)）"></a>主健约束（primary key(简称PK)）</h3><p>表中的某个字段添加主键约束后，该字段为主键字段，主键字段中出现的每一个数据都称为主键值，必须唯一且不能为null，即primary key = unique + not null。当一个字段同时被非空约束和唯一性约束时，自动成为主键。<strong>但oracle并不如此。</strong></p>
+<p>主键约束也称<strong>表级约束</strong>。</p>
+<ul>
+<li>单一主键：给一个字段添加主键约束</li>
+<li>复合主键：给多个字段联合添加一个主键约束(只能用表级定义)，用的少</li>
+</ul>
+<h3 id="外键约束（foreign-key-简称FK-）"><a href="#外键约束（foreign-key-简称FK-）" class="headerlink" title="外键约束（foreign key (简称FK)）"></a>外键约束（foreign key (简称FK)）</h3><p>若有两个表A、B，id是A的主键，而B中也有id字段，则id就是表B的外键，外键约束主要用来维护两个表之间数据的一致性。</p>
+<p>某个字段添加外键约束之后，该字段称为外键字段，外键字段中每个数据都是外键值。</p>
+<ul>
+<li>外键必须至少是受唯一性约束的。</li>
+<li>外键值可以为null。</li>
+<li>一张表可以有多个外键字段。</li>
+</ul>
+<h3 id="检查约束（check-mysql不支持，oracle支持））"><a href="#检查约束（check-mysql不支持，oracle支持））" class="headerlink" title="检查约束（check (mysql不支持，oracle支持））"></a>检查约束（check (mysql不支持，oracle支持））</h3><p>略</p>
+<h2 id="索引概念"><a href="#索引概念" class="headerlink" title="索引概念"></a>索引概念</h2><p>MySql官方对索引的定义为：索引（Index)）是帮助MySql高效获取数据的数据结构。</p>
+<p>提取句子主干，就可以得到索引的本质：索引是数据结构。</p>
+<p>在mysql当中，使用<code>explain</code>关键字查看一个SQL语句是否使用了索引进行检索</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain select * from tb_user</span><br></pre></td></tr></table></figure>
+
+<p>观察查询结果<code>key</code>列中是否列出了显示MySQL实际决定使用的键(索引) ，未使用则为null。</p>
+<p>同时，<strong>索引是各种数据库进行优化的重要手段</strong>。</p>
+<h2 id="索引实现原理"><a href="#索引实现原理" class="headerlink" title="索引实现原理"></a>索引实现原理</h2><ul>
+<li>在MySql当中，索引是一个单独的对象，不同的存储引擎以不同的形式存在。</li>
+<li>在MyISAM存储引擎中，索引存储在一个.MYI文件中。</li>
+<li>在InnoDB存储引擎中索引存储在表空间（tablespace）中。</li>
+<li>在MEMORY存储引擎当中索引被存储在内存当中。</li>
+<li>不管索引存储在哪里，索引在mysql当中都是一个<strong>B+树</strong>的形式存在。</li>
+</ul>
+<p><em>（至于为啥MySql使用B+树作为存储的数据结构，一时半会也说不明白，笔者也是略知一二，不想在这强行装X，目前知道B+树的结构就好了）</em></p>
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><h3 id="普通索引"><a href="#普通索引" class="headerlink" title="普通索引"></a>普通索引</h3><p>是最基本的索引，它没有任何限制。</p>
+<p>创建示例：</p>
+<ul>
+<li><p>直接创建</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE INDEX index_name ON table(column(length));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改表结构创建</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE &#39;table_name&#39; ADD INDEX index_name ON (column(length));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建表时创建</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE &#96;table&#96; (</span><br><span class="line">    &#96;id&#96; int(11) NOT NULL AUTO_INCREMENT ,</span><br><span class="line">    &#96;org&#96; char(255) CHARACTER NOT NULL ,</span><br><span class="line">    PRIMARY KEY (&#96;id&#96;),</span><br><span class="line">    INDEX index_name (org(length))</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>删除索引：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP INDEX index_name ON table</span><br></pre></td></tr></table></figure>
+
+<h3 id="唯一索引"><a href="#唯一索引" class="headerlink" title="唯一索引"></a>唯一索引</h3><p>与普通索引类似，不同之处在于：索引列的值必须唯一，但允许有空值，即列受<strong>唯一性约束（unique</strong>）；显然的，一张表可以有多个唯一索引。</p>
+<p>创建唯一索引：</p>
+<ul>
+<li><p>直接创建</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE UNIQUE INDEX index_name ON table(column(length));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改表结构创建</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE &#39;table_name&#39; ADD UNIQUE index_name ON (column(length));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建表时创建</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE &#96;table&#96; (</span><br><span class="line">    &#96;id&#96; int(11) NOT NULL AUTO_INCREMENT ,</span><br><span class="line">    &#96;org&#96; char(255) CHARACTER NOT NULL ,</span><br><span class="line">    PRIMARY KEY (&#96;id&#96;),</span><br><span class="line">    UNIQUE  index_name (org(length))</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="主键索引"><a href="#主键索引" class="headerlink" title="主键索引"></a>主键索引</h3><p>一种特殊的唯一索引。</p>
+<ul>
+<li>主键不可重复，只能有一个列作为主键</li>
+<li>一张表中主键索引只能存在一个</li>
+</ul>
+<p>一般是在建表的时候同时创建主键索引：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE &#96;table_name&#96; (</span><br><span class="line">    &#96;id&#96; int(11) NOT NULL AUTO_INCREMENT ,</span><br><span class="line">    &#96;org&#96; char(255) CHARACTER NOT NULL ,</span><br><span class="line">    PRIMARY KEY (&#96;id&#96;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="组合（复合、联合）索引"><a href="#组合（复合、联合）索引" class="headerlink" title="组合（复合、联合）索引"></a>组合（复合、联合）索引</h3><p>指多个字段上创建的索引</p>
+<ul>
+<li>组合索引中，列值的组合必须唯一。</li>
+<li>只有在查询条件中使用了创建索引时的第一个字段，索引才会被使用。</li>
+<li>使用组合索引时遵循最左前缀集合</li>
+</ul>
+<p>创建方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE &#39;table_name&#39; ADD INDEX fa_fb_fc (fa,fb,fc); </span><br></pre></td></tr></table></figure>
+
+<h3 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h3><p> InnoDB 存储引擎在MySql 5.6 之后才支持。</p>
+<p>只有字段的数据类型为 char、varchar、text 及其系列才可以建全文索引。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE &#39;table_name&#39; ADD FULLTEXT INDEX index_name (column1,column2,...);</span><br></pre></td></tr></table></figure>
+
+<p>跟普通索引稍有不同，使用全文索引的格式<code>MATCH (columnName) AGAINST (&#39;string&#39;)</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM &#96;table_name&#96; WHERE MATCH(&#96;name&#96;) AGAINST(&#39;马&#39;)</span><br></pre></td></tr></table></figure>
+
+<p>match() 函数中指定的列必须和全文索引中指定的列完全相同，否则就会报错，无法使用全文索引，这是因为全文索引不会记录关键字来自哪一列。如果想要对某一列使用全文索引，需要单独为该列创建全文索引。</p>
+<h2 id="索引失效情况"><a href="#索引失效情况" class="headerlink" title="索引失效情况"></a>索引失效情况</h2><p>常见的索引失效情况：</p>
+<ol>
+<li><p>以”%”开头进行模糊查询，索引失效（后缀有%时 不失效）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 有索引</span><br><span class="line">ALTER TABLE tableName ADD INDEX （col); </span><br><span class="line">select * from tableName where col like &#39;%T&#39;;</span><br></pre></td></tr></table></figure>
+
+<p>尽量避免模糊查询的时候以”%”开始,这是一种优化的手段/策略。</p>
+</li>
+<li><p>or 操作两边未同时使用索引，索引失效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 有索引</span><br><span class="line">ALTER TABLE tableName ADD INDEX （col1); </span><br><span class="line"># or 查询</span><br><span class="line">select * from tableName where col1 &#x3D; 100 or col2 &#x3D; &#39;tom&#39;;</span><br></pre></td></tr></table></figure>
+
+<p>如果使用or那么要求or两边的条件字段都要有索引，才会走索引，如果其中一边有一个字段没有索引，那么另一个字段上的索引也会失效。</p>
+</li>
+<li><p>使用组合（复合）索引时，未使用左侧的列，索引失效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 有索引</span><br><span class="line">ALTER TABLE tableName ADD INDEX fa_fb_fc (fa,fb,fc); </span><br><span class="line"># 查询时未使用左侧的列</span><br><span class="line">select * from tableName where fc &#x3D; 100;</span><br></pre></td></tr></table></figure>
+
+<p>遵循最左前缀集合。</p>
+</li>
+<li><p>数据类型出现隐式转化。如varchar不加单引号的话可能会自动转换为int型，使索引无效，产生全表扫描</p>
+</li>
+<li><p>在索引字段上使用not，&lt;&gt;，!=。不等于操作符是永远不会用到索引，对它的处理只会产生全表扫描。 优化方法： key&lt;&gt;0 改为 key&gt;0 or key&lt;0。很显然，索引是想知道你要什么而不是你不要什么，你品你细品。</p>
+</li>
+<li><p>索引的列参加了运算，索引失效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 有索引</span><br><span class="line">ALTER TABLE tableName ADD INDEX fa_fb_fc (fa,fb,fc); </span><br><span class="line"># 查询</span><br><span class="line">select * from tableName where fa + 1 &#x3D; 101;</span><br></pre></td></tr></table></figure>
+<p>说实话，没人写这种sql吧。</p>
+</li>
+<li><p>索引的列使用了函数，索引失效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 有索引</span><br><span class="line">ALTER TABLE tableName ADD INDEX fa_fb_fc (fa,fb,fc); </span><br><span class="line"># 查询</span><br><span class="line">select * from tableName where lower(fb)&#x3D; &#39;tom&#39;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>还有一点要注意的是：当全表扫描速度比索引速度快时，mysql会使用全表扫描，此时索引失效。</p>
+<p>说白了就一句话：索引是想要你直接告诉它你想要什么，而不是你不要什么，也不是你把这个东西（字段）包装之后，说包装完就是这样子，给我找。<code>┐(´-｀)┌</code>  </p>
+<h2 id="回表"><a href="#回表" class="headerlink" title="回表"></a>回表</h2><p>mysql的索引分为两大类：<strong>聚簇索引、非聚簇索引</strong>，<strong>它们不是一种单独的索引类型，而是一种数据存储方式</strong></p>
+<h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><p>将数据存储与索引放到了一块，找到索引也就找到了<strong>数据（严格来说这里的数据指的是行的物理位置</strong>），由于聚簇索引是将数据跟索引结构放到一块，因此一个表仅有一个聚簇索引。</p>
+<p>如果表中没有定义主键，则第一个not NULL unique列是聚集索引。如果没有这样的索引，InnoDB 会隐式定义一个主键来作为聚簇索引。</p>
+<p>下面是聚簇索引B+树的结构示意图</p>
+<p><img src="/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/MySql%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95.svg"></p>
+<h3 id="非聚簇索引"><a href="#非聚簇索引" class="headerlink" title="非聚簇索引"></a>非聚簇索引</h3><p>非聚簇索引也叫辅助索引或二级索引，非聚簇索引叶子节点存储的不再是<strong>数据（行的物理位置</strong>），而是主键值</p>
+<p>下面是非聚簇索引B+树的结构示意图</p>
+<p><img src="/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/MySql%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95.svg"></p>
+<h3 id="回表-1"><a href="#回表-1" class="headerlink" title="回表"></a>回表</h3><p>先通过非聚簇索引定位到主键值，在通过聚簇索引定位到行记录，这就是所谓的<strong>回表或回表查询</strong>，先定位主键值，再定位行记录，它的性能较扫一遍索引树更低。</p>
+<h2 id="索引覆盖"><a href="#索引覆盖" class="headerlink" title="索引覆盖"></a>索引覆盖</h2><p>MySql官网类似的说法是：使用explain查询计划时，explain的输出结果Extra字段为Using index时，能够触发索引覆盖。</p>
+<p>也就是如果触发了索引覆盖，那么explain输出的Extra字段为Using index。</p>
+<p>一般的说法是：索引中已经包含所有需要读取的列的查询称为覆盖索引。</p>
+<p>就是利用优化器的优化机制，只搜索了非聚簇索引，不进行回表操作，然后达到select的目的。一般主要适用于select出的字段很少的情况。</p>
+<p>举例：</p>
+<p>有张user表（PK id,name, age, email, address，……），我们的模板是<code>select name, age</code> ，然后只需要建立一个name和age的复合索引，然后这个非聚簇索引的叶子节点有了这两个字段和主键字段（虽然主键在这里没啥用）。然后执行器只需要搜索这个二级索引即可，不需要回表操作就完成了select查询操作。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
+<li>主键上以及unique字段是上都会自动添加索引</li>
+<li>虽然索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行insert、update和delete时。因为更新表时，不仅要保存数据，还要保存一下索引文件。</li>
+<li>建立索引会占用磁盘空间的索引文件。一般情况影响不大，但如果在一个大的表上创建了多种组合索引，索引文件大小会增长的很快。</li>
+<li>索引只是提高效率的一个因素，如果有大数据量的表，就需要花时间研究建立最优的索引，或优化查询语句。 </li>
+</ul>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://windmo.github.io/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://windmo.github.io/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/";
+            const title         = "「MySql索引详解」";
+            const excerpt       = `了解索引之前先了解一下约束。
+约束（constraint）约束实际上就是表中数据的限制条件 ，表在设计的时候加入约束的目的就是为了保证表中的记录完整和有效 ，常见约束如下
+非空约束（not null）约束的字段不能为null
+唯一性约...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2021-07-18</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" MySql事务" href="/WindShadow/MySql/MySql事务/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Java线程池原理（二）" href="/WindShadow/Java多线程/Java线程池原理/Java线程池原理（二）/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by WindShadow-mo.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

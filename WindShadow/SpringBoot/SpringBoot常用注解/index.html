@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/jx.jpg">
+  <title>SpringBoot常用注解 | 风的影子</title>
+  <meta name="author" content="WindShadow-mo" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="话不多说，过一下配置文件 yml配置文件主要写法参数写法 1234567891011121314151617181920212223242526272829303132333435363738mystarter.config:  # 布尔类型  enable: true    # 数字或基本类型#  size: $&amp;#123;random.int&amp;#125; 随机数  size: 18    #">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot常用注解">
+<meta property="og:url" content="https://windmo.github.io/WindShadow/SpringBoot/SpringBoot%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="话不多说，过一下配置文件 yml配置文件主要写法参数写法 1234567891011121314151617181920212223242526272829303132333435363738mystarter.config:  # 布尔类型  enable: true    # 数字或基本类型#  size: $&amp;#123;random.int&amp;#125; 随机数  size: 18    #">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://windmo.github.io/images/jx.jpg">
+<meta property="article:published_time" content="2021-02-28T11:06:07.934Z">
+<meta property="article:modified_time" content="2022-05-11T15:17:14.004Z">
+<meta property="article:author" content="WindShadow-mo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://windmo.github.io/images/jx.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-file"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/about"><i class="fa fa-paper-plane"></i>关于</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>WindShadow</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/jx0.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">风的影子</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/">web基础扫盲</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/JVM/Garbage-Collection/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/%E4%BD%95%E4%B8%BAJava%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/"><i class="fa  fa-book"></i> 何为Java线程中断</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa  fa-book"></i> Java线程池原理（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/"><i class="fa  fa-book"></i> MySql索引详解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E4%BA%8B%E5%8A%A1/"><i class="fa  fa-book"></i> MySql事务</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">SpringBoot常用注解</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2021-02-28</li>
+                <li><i class="fa fa-user"></i> 作者 WindShadow-mo</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~15.85K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1652282234004"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+            <hr />
+            <p>话不多说，过一下配置文件</p>
+<h2 id="yml配置文件主要写法"><a href="#yml配置文件主要写法" class="headerlink" title="yml配置文件主要写法"></a>yml配置文件主要写法</h2><p>参数写法</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mystarter.config:</span></span><br><span class="line">  <span class="comment"># 布尔类型</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 数字或基本类型</span></span><br><span class="line"><span class="comment">#  size: $&#123;random.int&#125; 随机数</span></span><br><span class="line">  <span class="attr">size:</span> <span class="number">18</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 字符串</span></span><br><span class="line"><span class="comment">#  address: &quot;beijing \n aaa&quot; 加双引号不会转义</span></span><br><span class="line"><span class="comment">#  address: &#x27;beijing \n aaa&#x27; 加单引号会转义</span></span><br><span class="line">  <span class="attr">address:</span> <span class="string">beijing</span></span><br><span class="line">  <span class="comment"># 时间date</span></span><br><span class="line">  <span class="attr">date:</span> <span class="number">2021</span><span class="string">/01/01</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 自定义bean map</span></span><br><span class="line"><span class="comment">#  user: &#123;username: root, password: 123456&#125; 行内写法</span></span><br><span class="line">  <span class="attr">user:</span></span><br><span class="line"><span class="comment">#    username: $&#123;mystarter.config.address&#125;  引用其它配置，不存在则为 &quot;$&#123;mystarter.config.address&#125;&quot;字符串</span></span><br><span class="line"><span class="comment">#    username: $&#123;mystarter.config.address: testuser&#125;  引用其它配置，不存在则使用缺省值</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">  <span class="attr">map:</span></span><br><span class="line">    <span class="attr">ip:</span> <span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">    <span class="attr">loginName:</span> <span class="string">root</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 数组 list set</span></span><br><span class="line"><span class="comment">#    array: [aaa,bbb,ccc] 行内写法</span></span><br><span class="line">  <span class="attr">array:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">aaa</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bbb</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ccc</span></span><br><span class="line">  <span class="attr">list:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ddd</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">eee</span></span><br><span class="line">  <span class="attr">set:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">fff</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ggg</span></span><br></pre></td></tr></table></figure>
+
+<p>激活配置文件或配置块</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">demo-test</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line"><span class="comment"># 配置文件激活</span></span><br><span class="line"><span class="comment"># 1、创建配置文件时名称为 application-&#123;name&#125;.yml 可使用 spring.profiles.active=&#123;name&#125;去激活，找不到则使用默认主配置</span></span><br><span class="line"><span class="comment">#   激活后配置内容 = 配置文件交集 + 激活文件非交集部分</span></span><br><span class="line"><span class="comment"># 2、也可激活块部分，yml文档块 spring.profiles.active=dev1</span></span><br><span class="line"><span class="comment"># 3、使用命令行激活 --spring.profiles.active=dev1</span></span><br><span class="line"><span class="comment"># 4、使用jvm参数 -Dspring.profiles.active=dev1</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev1</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line"><span class="string">---</span> <span class="comment"># 新的块</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8081</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">dev1</span></span><br><span class="line"><span class="string">---</span> <span class="comment"># 新的块</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8082</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">dev2</span></span><br><span class="line"><span class="comment">#  spring boot启动会扫描以下位置的application.properties或者application.yml文件作为Spring boot的默认配置文件</span></span><br><span class="line"><span class="comment">#  file:./config/</span></span><br><span class="line"><span class="comment">#  file:./</span></span><br><span class="line"><span class="comment">#  classpath:/config(- classpath:/</span></span><br><span class="line"><span class="comment">#  以上是按照优先级从高到低的顺序，所有位置的文件都会被加载，高优先级配置内容会覆盖低优先级配置内容。</span></span><br><span class="line"><span class="comment">#  我们也可以通过配置spring.config.location来改变默认配置</span></span><br></pre></td></tr></table></figure>
+
+<p>另外，properties文件，特殊#—注释用于标记文档拆分</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">spring.application.name</span>=<span class="string">MyApp</span></span><br><span class="line"><span class="comment">#---</span></span><br><span class="line"><span class="meta">spring.config.activate.on-cloud-platform</span>=<span class="string">kubernetes</span></span><br><span class="line"><span class="meta">spring.application.name</span>=<span class="string">MyCloudApp</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="外部配置加载顺序"><a href="#外部配置加载顺序" class="headerlink" title="外部配置加载顺序"></a>外部配置加载顺序</h2><p>SpringBoot也可以从以下位置加载配置﹔优先级从高到低﹔高优先级的配置覆盖低优先级的配置，所有的配置会形成互补配置，以下列举实用的外部配置，<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">官网文档</a></p>
+<ol>
+<li><p>命令行参数，多个参数用空格分开</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar spring-boot-xxx-0.0.1-SNAPSHOT.jar --server.port=9090</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>来自java:comp/env的JNDI属性</p>
+</li>
+<li><p>Java系统属性( System.getProperties() )</p>
+</li>
+<li><p>操作系统环境变量</p>
+</li>
+<li><p>RandomValuePropertySource配置的random.*属性值</p>
+</li>
+<li><p>jar包外部的application-{profile}.properties或application.yml(带spring.profile)配置文件</p>
+</li>
+<li><p>jar包内部的application-{profile}.properties或application.yml(带spring.profile)配置文件</p>
+</li>
+<li><p>jar包外部的application.properties或application.yml(不带spring.profile)配置文件</p>
+</li>
+<li><p>jar包内部的application.properties或application.yml(不带spring.profile)配置文件</p>
+</li>
+<li><p>@Configuration注解类上的@PropertySource</p>
+</li>
+<li><p>通过SpringApplication.setDefaultProperties指定的默认属性</p>
+</li>
+</ol>
+<p>优先级从 1 &gt; 2 &gt; … &gt; 11，jar包外 &gt; jar包内，带{profile} &gt; 不带{profile} ；</p>
+<h2 id="ConfigurationProperties"><a href="#ConfigurationProperties" class="headerlink" title="@ConfigurationProperties"></a>@ConfigurationProperties</h2><p>从配置文件给bean配置属性</p>
+<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>搭配组件型注解，如<code>@Component</code>，指定前缀，以属性名进行赋值，依赖于空构造函数；</p>
+<ol>
+<li><p>ignoreInvalidFields</p>
+<p>当配置文件中的值无法映射给bean的属性。如字符串给数字赋值等，SpringBoot应用会抛异常而起动失败，而ignoreInvalidFields属性设置为true（默认为false）时可以使应用不会停止，即使用属性默认的值。</p>
+</li>
+<li><p>ignoreUnknownFields</p>
+<p>忽略位置属性；当配置文件中出现了类中没有定义的属性时，即出现了未知的属性，SpringBoot默认时忽略它的（ignoreUnknownFields默认为true），ignoreUnknownFields设为false时，表示要对未知属性“斤斤计较”，结果自然是启动失败。</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;ordinary.bind&quot;, ignoreInvalidFields = true, ignoreUnknownFields = false)</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrdinaryPropertiesBindExample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Boolean enable = <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-Spring-Boot-Configuration-Processor自动补全"><a href="#使用-Spring-Boot-Configuration-Processor自动补全" class="headerlink" title="使用 Spring Boot Configuration Processor自动补全"></a>使用 Spring Boot Configuration Processor自动补全</h3><p>pom.xml中加入Spring Boot Configuration Processor的依赖，并重新build之后，IDEA中编写配置文件时就可以自动补全了</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/WindShadow/SpringBoot/SpringBoot%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8.png" alt="自动补全"></p>
+<h4 id="标记配置属性为-Deprecated"><a href="#标记配置属性为-Deprecated" class="headerlink" title="标记配置属性为 Deprecated"></a>标记配置属性为 Deprecated</h4><p>使用<code>@DeprecatedConfigurationProperty</code>注解作用与属性的get方法上，表示该属性已经过时，重新build之后，属性对应的自动补全提示也会发生改变</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;ordinary.bind&quot;, ignoreInvalidFields = true, ignoreUnknownFields = false)</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrdinaryPropertiesBindExample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Boolean enable = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@DeprecatedConfigurationProperty(reason = &quot;我已经过时&quot;, replacement = &quot;none&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Boolean <span class="title">getEnable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.enable;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/WindShadow/SpringBoot/SpringBoot%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8-%E8%BF%87%E6%97%B6.png" alt="自动补全-过时"></p>
+<h3 id="搭配-ConstructorBinding"><a href="#搭配-ConstructorBinding" class="headerlink" title="搭配@ConstructorBinding"></a>搭配@ConstructorBinding</h3><p><code>@ConstructorBinding</code>注解，顾名思义，构造绑定，通过构造方法，从配置文件获取值给bean设置属性。使用此方式时，需要通过<code>@EnableConfigurationProperties</code>注解修饰的配置类来扫描该类加入IOC，不能对通过常规Spring机制创建的bean使用构造函数绑定，即不能添加组件型注解（如<code>@Component</code>）这样的注解加入IOC，原因也很简单，这里不作解释。</p>
+<p>搭配<code>@ConstructorBinding</code>的配置方式，一般在给类内为 final的属性初始化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConstructorBinding</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(&quot;constructor.bind&quot;)</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructorPropertiesBindExample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;<span class="comment">// 一般用于运行时不可变的配置</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ConstructorPropertiesBindExample</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;构造方法被调用&quot;</span>);</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableConfigurationProperties(ConstructorPropertiesBindExample.class)</span><span class="comment">// 激活</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructorPropertiesBindExampleActive</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="搭配-Bean"><a href="#搭配-Bean" class="headerlink" title="搭配@Bean"></a>搭配<code>@Bean</code></h3><p>搭配<code>@Bean</code>注解时，不依赖该bean的无参构造，仅在bean实例化后进行属性设置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ConfigurationProperties(&quot;atbean.bind&quot;)</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ExampleBean <span class="title">exampleBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ExampleBean();</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 定义一个pojo</span></span><br><span class="line">    <span class="meta">@NoArgsConstructor</span></span><br><span class="line">    <span class="meta">@AllArgsConstructor</span></span><br><span class="line">    <span class="meta">@Data</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> String examName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ConfigurationPropertiesBinding与自定义转换器"><a href="#ConfigurationPropertiesBinding与自定义转换器" class="headerlink" title="@ConfigurationPropertiesBinding与自定义转换器"></a>@ConfigurationPropertiesBinding与自定义转换器</h2><p>实现<code>org.springframework.core.convert.converter.Converter</code>接口实现自定义转换器，使用<code>@ConfigurationPropertiesBinding</code>声名为Spring可用的转换器</p>
+<p>设置性别类。不设置枚举是因为Spring默认支持枚举的字符串配置了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sex</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Sex MAN = <span class="keyword">new</span> Sex(<span class="string">&quot;man&quot;</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Sex WOMAN = <span class="keyword">new</span> Sex(<span class="string">&quot;woman&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String value;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sex</span><span class="params">(String value)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实现性别类的转换器，接收不符合规则的String抛出<code>IllegalArgumentException</code>异常</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationPropertiesBinding</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SexConverter</span> <span class="keyword">implements</span> <span class="title">Converter</span>&lt;<span class="title">String</span>,<span class="title">Sex</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String,Sex&gt; SEX_VALUE_SET =</span><br><span class="line">            Arrays.stream(<span class="keyword">new</span> Sex[]&#123;Sex.MAN,Sex.WOMAN&#125;).collect(Collectors.toMap(Sex::getValue,sex -&gt; sex));</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sex <span class="title">convert</span><span class="params">(String source)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (SEX_VALUE_SET.containsKey(source)) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> SEX_VALUE_SET.get(source);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;The sex string value must in &quot;</span> + SEX_VALUE_SET.keySet().toString());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>建立一个pojo</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;sexbean&quot;)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleSexBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Sex sex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>yml文件如下配置即可达到目的，配置的值不是 man或woman则抛出异常</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 自定义转换器</span></span><br><span class="line"><span class="attr">sexbean:</span></span><br><span class="line">  <span class="attr">sex:</span> <span class="string">man</span></span><br></pre></td></tr></table></figure>
+
+<p>一般来说像上面这种情况使用枚举即可，这里为了举例不使用枚举。</p>
+<h2 id="条件注入"><a href="#条件注入" class="headerlink" title="条件注入"></a>条件注入</h2><p>仅列举常用的条件注入（有必要的话，可以取去了解<code>SpringBootCondition</code>）</p>
+<h3 id="ConditionalOnProperty"><a href="#ConditionalOnProperty" class="headerlink" title="@ConditionalOnProperty"></a>@ConditionalOnProperty</h3><p>根据【配置文件是否存在对应的键值对】作为注入条件</p>
+<p>以下配置可理解为：配置文件存在 “ex.config.flag=true”时注入bean，若不存在该key值则默认为false（不注入）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnProperty(prefix = &quot;ex.config&quot;, name = &quot;flag&quot;, havingValue = &quot;1&quot;, matchIfMissing = false)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnBean"><a href="#ConditionalOnBean" class="headerlink" title="@ConditionalOnBean"></a>@ConditionalOnBean</h3><p>根据【容器内是否存在符合条件的bean】作为注入条件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ConditionalOnBean &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 需要作为条件的类的Class对象数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Class&lt;?&gt;[] value() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 需要作为条件的类的Name,Class.getName()</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String[] type() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *  (用指定注解修饰的bean)条件所需的注解类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Class&lt;? extends Annotation&gt;[] annotation() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * spring容器中bean的名字</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String[] name() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 搜索容器层级,当前容器，父容器，全部</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">SearchStrategy <span class="title">search</span><span class="params">()</span> <span class="keyword">default</span> SearchStrategy.ALL</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 可能在其泛型参数中包含指定bean类型的其他类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Class&lt;?&gt;[] parameterizedContainer() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnBean(value = SpringbootAnnotationApplication.class)</span></span><br><span class="line"><span class="comment">//@ConditionalOnBean(name = &quot;springbootAnnotationApplication&quot;)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnBean</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnClass"><a href="#ConditionalOnClass" class="headerlink" title="@ConditionalOnClass"></a>@ConditionalOnClass</h3><p>根据【工程中引入是否存在该class】作为注入条件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnClass(SpringbootAnnotationApplication.class)</span></span><br><span class="line"><span class="comment">//@ConditionalOnClass(name = &quot;ws.springboot.springbootannotation.SpringbootAnnotationApplication&quot;) // 类全限定名</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnClass</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnJava"><a href="#ConditionalOnJava" class="headerlink" title="@ConditionalOnJava"></a>@ConditionalOnJava</h3><p>根据【当前使用的java版本与配置的版本对比结果】作为注入条件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnJava(</span></span><br><span class="line"><span class="meta">        value = JavaVersion.EIGHT, // java 1.8</span></span><br><span class="line"><span class="meta">        range = ConditionalOnJava.Range.EQUAL_OR_NEWER)</span><span class="comment">// 大于或等于 ConditionalOnJava.Range.OLDER_THAN 为小于</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnJava</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnExpression"><a href="#ConditionalOnExpression" class="headerlink" title="@ConditionalOnExpression"></a>@ConditionalOnExpression</h3><p>根据【spel表达式结果】作为注入条件，注解内值不符合表达式规则则抛出异常</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnExpression(&quot;1 + 1 == 2&quot;)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnExpression</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnMissingBean"><a href="#ConditionalOnMissingBean" class="headerlink" title="@ConditionalOnMissingBean"></a>@ConditionalOnMissingBean</h3><p>根据【容器内是否不存在符合条件的bean】作为注入条件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Conditional(OnBeanCondition.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ConditionalOnMissingBean &#123;</span><br><span class="line"> 	<span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 需要检查的 bean 的 class 类型。当 ApplicationContext 不包含每一个被指定的 class 时条件匹配。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Class&lt;?&gt;[] value() <span class="keyword">default</span> &#123;&#125;;    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 需要检查的 bean 的 class 类型名称(Java全限定名)。当 ApplicationContext 不包含每一个被指定的 class 时条件匹配。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String[] type() <span class="keyword">default</span> &#123;&#125;;    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 识别匹配 bean 时，可以被忽略的 bean 的 class 类型</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Class&lt;?&gt;[] ignored() <span class="keyword">default</span> &#123;&#125;;    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 识别匹配 bean 时，可以被忽略的 bean 的 class 类型名称(Java全限定名)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String[] ignoredType() <span class="keyword">default</span> &#123;&#125;;    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 装饰需要检查的 bean 的注解。当 ApplicationContext 不包含带有这些注解的 bean 时条件匹配。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Class&lt;? extends Annotation&gt;[] annotation() <span class="keyword">default</span> &#123;&#125;;    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 需要检查的 bean 的 name。当 ApplicationContext 不包含任意指定的每一个的 class 时条件匹配。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String[] name() <span class="keyword">default</span> &#123;&#125;;    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 搜索容器层级,当前容器，父容器，全部</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">SearchStrategy <span class="title">search</span><span class="params">()</span> <span class="keyword">default</span> SearchStrategy.ALL</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnMissingBean(name = &quot;springbootAnnotationApplication999&quot;)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnMissingBean</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnMissingClass"><a href="#ConditionalOnMissingClass" class="headerlink" title="@ConditionalOnMissingClass"></a>@ConditionalOnMissingClass</h3><p>根据【容器内是否不存在该class的bean】作为注入条件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnMissingClass(&quot;ws.springboot.springbootannotation.SpringbootAnnotationApplication999&quot;)</span> <span class="comment">// 类全限定名</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnMissingClass</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnMissingFilterBean"><a href="#ConditionalOnMissingFilterBean" class="headerlink" title="@ConditionalOnMissingFilterBean"></a>@ConditionalOnMissingFilterBean</h3><p>根据【容器内是否不存在该过滤器】作为注入条件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnMissingFilterBean(CorsFilter.class)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnMissingFilterBean</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnCloudPlatform"><a href="#ConditionalOnCloudPlatform" class="headerlink" title="@ConditionalOnCloudPlatform"></a>@ConditionalOnCloudPlatform</h3><p>根据【应用所处云平台】作为注入条件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnCloudPlatform(CloudPlatform.KUBERNETES)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnCloudPlatform</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">CloudPlatform</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 无（无平台，返回false，bean不会被注入）</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	NONE,</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 云计算平台</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	CLOUD_FOUNDRY,</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Heroku平台</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	HEROKU,</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * SAP 云平台.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	SAP,</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * K8S.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	KUBERNETES </span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnWebApplication"><a href="#ConditionalOnWebApplication" class="headerlink" title="@ConditionalOnWebApplication"></a>@ConditionalOnWebApplication</h3><p>根据【应用是否所处于web环境】作为注入条件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.ANY)</span> <span class="comment">// 任何web环境</span></span><br><span class="line"><span class="comment">//@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET) // 基于servlet的web应用</span></span><br><span class="line"><span class="comment">//@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE) // 基于响应式的web应用（猜测可能是webflux）</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnWebApplication</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnNotWebApplication"><a href="#ConditionalOnNotWebApplication" class="headerlink" title="@ConditionalOnNotWebApplication"></a>@ConditionalOnNotWebApplication</h3><p>根据【应用是否所不处于web环境】作为注入条件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnNotWebApplication</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnNotWebApplication</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnResource"><a href="#ConditionalOnResource" class="headerlink" title="@ConditionalOnResource"></a>@ConditionalOnResource</h3><p>根据【资源是否存在】作为注入条件，如日志的相关配置等</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnResource(resources = &quot;classpath:application.yml&quot;)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnResource</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConditionalOnSingleCandidate"><a href="#ConditionalOnSingleCandidate" class="headerlink" title="@ConditionalOnSingleCandidate"></a>@ConditionalOnSingleCandidate</h3><p>根据【容器内是否存在该class的bean，且只有一个实例或为首选的】作为注入条件，即容器中存在该class的bean的实例，且只有一个时注入条件为true，当存在多个实例时，有一个实例为首选的（如加上了<code>@Primary</code>注解），注入条件也为true，即在其它bean中注入该class的bean时，如使用<code>@Autowired</code>且不指定bean名称时，不会发生依赖注入失败，这个时候，以这个calss为value的<code>@ConditionalOnResource</code>注解条件匹配结果就是true。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnSingleCandidate(value = I.class)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnSingleCandidate</span> </span>&#123; <span class="comment">// 不可注入</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">I</span></span>&#123;&#125;</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> <span class="keyword">implements</span> <span class="title">I</span></span>&#123;&#125;</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">implements</span> <span class="title">I</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnSingleCandidate(value = I.class)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOnSingleCandidate</span> </span>&#123; <span class="comment">// 可注入</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">I</span></span>&#123;&#125;</span><br><span class="line"><span class="meta">@Primary</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> <span class="keyword">implements</span> <span class="title">I</span></span>&#123;&#125;</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">implements</span> <span class="title">I</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="条件注入的组合"><a href="#条件注入的组合" class="headerlink" title="条件注入的组合"></a>条件注入的组合</h2><h3 id="组合条件-AND"><a href="#组合条件-AND" class="headerlink" title="组合条件 AND"></a>组合条件 AND</h3><ol>
+<li><p>在类上使用多个@ConditionalOnXxxx</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnClass(name = &quot;ws.springboot.springbootannotation.SpringbootAnnotationApplication&quot;)</span></span><br><span class="line"><span class="meta">@ConditionalOnJava(value = JavaVersion.EIGHT, range = ConditionalOnJava.Range.EQUAL_OR_NEWER)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalAnd1</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自定义注解上使用其它条件注入注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(&#123; ElementType.TYPE, ElementType.METHOD &#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@ConditionalOnClass(name = &quot;ws.springboot.springbootannotation.SpringbootAnnotationApplication&quot;)</span></span><br><span class="line"><span class="meta">@ConditionalOnJava(value = JavaVersion.EIGHT, range = ConditionalOnJava.Range.EQUAL_OR_NEWER)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyConditionalAndAnno &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>应用到要进行条件注入的组件上</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MyConditionalAndAnno</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalAnd3</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>继承<code>AllNestedConditions</code>类封装条件，使用静态内部类标注条件，所有条件将进行【逻辑与】操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * and条件注入</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> WindShadow</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2021/2/3</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConditionalAnd</span> <span class="keyword">extends</span> <span class="title">AllNestedConditions</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyConditionalAnd</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(ConfigurationPhase.PARSE_CONFIGURATION);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ConditionalOnClass(name = &quot;ws.springboot.springbootannotation.SpringbootAnnotationApplication&quot;)</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OnClass</span></span>&#123;&#125;</span><br><span class="line">    <span class="meta">@ConditionalOnJava(value = JavaVersion.EIGHT, range = ConditionalOnJava.Range.EQUAL_OR_NEWER)</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OnJava</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Conditional(MyConditionalAnd.class)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalAnd2</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>ConfigurationPhase</code>枚举的两个值意义如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">ConfigurationPhase</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 配置类解析阶段，如果条件为false，配置类将不会被解析</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        PARSE_CONFIGURATION,</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * bean注册阶段，如果为false，bean将不会被注册</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">REGISTER_BEAN</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="组合条件-OR"><a href="#组合条件-OR" class="headerlink" title="组合条件 OR"></a>组合条件 OR</h3><p>   继承<code>AnyNestedCondition</code>类封装条件，使用静态内部类标注条件，所有条件将进行【逻辑或】操作</p>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConditionalOr</span> <span class="keyword">extends</span> <span class="title">AnyNestedCondition</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyConditionalOr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(ConfigurationPhase.PARSE_CONFIGURATION);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ConditionalOnClass(name = &quot;ws.springboot.springbootannotation.SpringbootAnnotationApplication&quot;)</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OnClass</span></span>&#123;&#125;</span><br><span class="line">    <span class="meta">@ConditionalOnJava(value = JavaVersion.NINE, range = ConditionalOnJava.Range.EQUAL_OR_NEWER)</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OnJava</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Conditional(MyConditionalOr.class)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalOr</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="组合条件-NOT"><a href="#组合条件-NOT" class="headerlink" title="组合条件 NOT"></a>组合条件 NOT</h3><p>   继承<code>NoneNestedConditions</code>类封装条件，使用静态内部类标注条件，所有条件将进行【逻辑非】操作</p>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConditionalNot</span> <span class="keyword">extends</span> <span class="title">NoneNestedConditions</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyConditionalNot</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(ConfigurationPhase.PARSE_CONFIGURATION);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@ConditionalOnClass(name = &quot;ws.springboot.springbootannotation.SpringbootAnnotationApplication999&quot;)</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OnClass</span></span>&#123;&#125;</span><br><span class="line">    <span class="meta">@ConditionalOnJava(value = JavaVersion.NINE, range = ConditionalOnJava.Range.EQUAL_OR_NEWER)</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OnJava</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Conditional(MyConditionalNot.class)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConditionalNot</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Servlet组件的扫描"><a href="#Servlet组件的扫描" class="headerlink" title="Servlet组件的扫描"></a>Servlet组件的扫描</h2><h3 id="ServletComponentScan"><a href="#ServletComponentScan" class="headerlink" title="ServletComponentScan"></a>ServletComponentScan</h3><p>在<code>@SpringBootApplication</code>上使用<code>@ServletComponentScan</code>注解后，Servlet、Filter、Listener可以直接通过<code>@WebServlet</code>、<code>@WebFilter</code>、<code>@WebListener</code>注解自动注册，无需其他代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ServletComponentScan</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(DemoApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://windmo.github.io/WindShadow/SpringBoot/SpringBoot%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://windmo.github.io/WindShadow/SpringBoot/SpringBoot%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/";
+            const title         = "「SpringBoot常用注解」";
+            const excerpt       = `话不多说，过一下配置文件
+yml配置文件主要写法参数写法
+1234567891011121314151617181920212223242526272829303132333435363738mystarter.config:  # ...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-05-11</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Nginx原理初探" href="/WindShadow/Nginx/Nginx原理初探/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Spring框架基础能力-数据转换" href="/WindShadow/Spring/Spring框架基础能力-数据转换/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by WindShadow-mo.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

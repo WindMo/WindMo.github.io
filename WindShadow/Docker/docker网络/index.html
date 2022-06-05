@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/jx.jpg">
+  <title>Docker网络 | 风的影子</title>
+  <meta name="author" content="WindShadow-mo" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="docker0网卡服务器安装了docker，就会有一个网卡docker0，docker0网卡使用nat直连到服务器的物理网卡。  evth-pairevth-pari 是一种虚拟网络设备，是一对的虚拟设备接口，它们都是成对出现的，一端连着内核协议栈 ，一端彼此相连着，一个设备收到协议栈的数据发送请求后，会将数据发送到另一个设备上去，正因为这个特性，evth-pair 充当一个桥梁，连接各种虚拟网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker网络">
+<meta property="og:url" content="https://windmo.github.io/WindShadow/Docker/docker%E7%BD%91%E7%BB%9C/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="docker0网卡服务器安装了docker，就会有一个网卡docker0，docker0网卡使用nat直连到服务器的物理网卡。  evth-pairevth-pari 是一种虚拟网络设备，是一对的虚拟设备接口，它们都是成对出现的，一端连着内核协议栈 ，一端彼此相连着，一个设备收到协议栈的数据发送请求后，会将数据发送到另一个设备上去，正因为这个特性，evth-pair 充当一个桥梁，连接各种虚拟网络">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://windmo.github.io/images/jx.jpg">
+<meta property="article:published_time" content="2021-05-26T12:01:46.401Z">
+<meta property="article:modified_time" content="2021-06-02T15:30:44.672Z">
+<meta property="article:author" content="WindShadow-mo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://windmo.github.io/images/jx.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-file"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/about"><i class="fa fa-paper-plane"></i>关于</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>WindShadow</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/jx0.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">风的影子</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/">web基础扫盲</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/JVM/Garbage-Collection/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/%E4%BD%95%E4%B8%BAJava%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/"><i class="fa  fa-book"></i> 何为Java线程中断</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa  fa-book"></i> Java线程池原理（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/"><i class="fa  fa-book"></i> MySql索引详解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E4%BA%8B%E5%8A%A1/"><i class="fa  fa-book"></i> MySql事务</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">Docker网络</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2021-05-26</li>
+                <li><i class="fa fa-user"></i> 作者 WindShadow-mo</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~3.61K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1622647844672"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+            <hr />
+            <h2 id="docker0网卡"><a href="#docker0网卡" class="headerlink" title="docker0网卡"></a>docker0网卡</h2><p>服务器安装了docker，就会有一个网卡docker0，docker0网卡使用nat直连到服务器的物理网卡。</p>
+<p><img src="/WindShadow/Docker/docker%E7%BD%91%E7%BB%9C/docker-veth-pair.jpg"></p>
+<h3 id="evth-pair"><a href="#evth-pair" class="headerlink" title="evth-pair"></a>evth-pair</h3><p>evth-pari 是一种虚拟网络设备，是一对的虚拟设备接口，它们都是成对出现的，一端连着内核协议栈 ，一端彼此相连着，一个设备收到协议栈的数据发送请求后，会将数据发送到另一个设备上去，正因为这个特性，evth-pair 充当一个桥梁，连接各种虚拟网络设备；OpenStack，Docker容器之间的连接, OVS的连接，都是使用 evth-pair 技术。</p>
+<p>上图中，docker0扮演的角色可以比作容器依赖的路由器，容器不指定网络的情况下，都是通过docker0路由的，docker会给容器分配一个默认的可用ip，只要容器被删除，对应的evth-pari接口就没了 。docker中通过evth-pair连接到docker0的网络连接模式称之为<strong>桥接</strong>模式，该模式下的任意容器之间是可以相互ping通的。</p>
+<p>桥接到docker0网卡的方式缺点也很明显，无法预知容器IP，且在容器重启后IP可能会发生变化，导致容器内的应用之间存在依赖时，不方便配置，如数据库IP等。</p>
+<h3 id="docker0-IP分配方式"><a href="#docker0-IP分配方式" class="headerlink" title="docker0 IP分配方式"></a>docker0 IP分配方式</h3><p>需要注意的是，docker0分配IP的方式是按顺序分配，如已经分配了容器A（172.17.0.1）、容器B（172.17.0.2），下一个容器C的IP为172.17.0.3，如果此时容器B停止或被删除，再新建容器D时，其IP为172.17.0.2。</p>
+<h2 id="link方式连接"><a href="#link方式连接" class="headerlink" title="link方式连接"></a>link方式连接</h2><p>容器桥接到docker0的网络连接方式显然不能满足部署需求，如果能使用容器名进行网络连接，就不必担心容器重启后IP改变的问题了，docker提供了link方式的网络连接；</p>
+<p>在<code>docker run</code>启动容器时使用<code>--link</code>选项连接到其它容器：命令示例：<code>docker run -it --link &lt;容器id或容器名&gt;:[alias] centos</code>；</p>
+<ul>
+<li><code>docker run -it --name=mycentos --link mysql-dev centos</code>：启动一个名为mycentos的容器，且连接到名为mysql-dev的容器，此时在mycentos容器内可以使用<code>ping mysql-dev</code>的方式ping通名为mysql-dev的容器</li>
+<li><code>docker run -it --name=mycentos --link mysql-dev:db centos</code>：alias是容器在link模式下的别名，同上，在mycentos容器内还可以使用<code>ping db</code>的方式ping通名为mysql-dev的容器</li>
+</ul>
+<h3 id="link方式连接原理"><a href="#link方式连接原理" class="headerlink" title="link方式连接原理"></a>link方式连接原理</h3><p>在源容器的hosts文件写入目标容器名、目标容器link下的别名、目标容器id，均指向目标容器的IP，当目标容器的IP发生变化时，hosts文件的配置也跟着发生变化，这是通过docker容器的环境变量完成的。</p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>显然的，源容器通过link方式连接到目标容器时，可以通过容器名访问目标容器，反过来则不行，因为是通过写hosts的形式去实现的。</li>
+<li>当目标容器被删除时，源容器的hosts配置还存在，此时新的容器“占据”旧目标容器IP时（依据docker0的 IP分配方式），源容器的hosts配置并不会发生改变，故而连接到新的容器。</li>
+</ul>
+<p>官方已经已经不推荐使用link方式去设计容器的网络了。</p>
+<h2 id="自定义网络（核心）"><a href="#自定义网络（核心）" class="headerlink" title="自定义网络（核心）"></a>自定义网络（核心）</h2><p>既然docker通过容器模拟了一个小型的linux操作系统，自然也少不了计算机网络。docker提供<code>docker network</code>命令来管理网络，使用docker创建网络的主要参数有：网络名称，网络模式，子网，网关。</p>
+<h3 id="docker的网络模式"><a href="#docker的网络模式" class="headerlink" title="docker的网络模式"></a>docker的网络模式</h3><ul>
+<li><p>bridge</p>
+<p>桥接模式，docker默认的网络模式，该模式下容器桥接到docker0网卡</p>
+</li>
+<li><p>none</p>
+<p>不配置网络</p>
+</li>
+<li><p>host</p>
+<p>和宿主机共享网络，即使用宿主机的IP端口</p>
+</li>
+<li><p>container</p>
+<p>容器网络连通（用得少，局限大）</p>
+</li>
+</ul>
+<h3 id="网络管理"><a href="#网络管理" class="headerlink" title="网络管理"></a>网络管理</h3><h4 id="docker-network-create"><a href="#docker-network-create" class="headerlink" title="docker network create"></a>docker network create</h4><p>作用：创建网络；</p>
+<p>命令格式：<code>docker network create [options] &lt;网络名&gt;</code>；</p>
+<p>常见命令格式：<code>docker network create --driver &lt;网络模式&gt; --subnet &lt;子网&gt; --gateway &lt;网关地址&gt; &lt;网络名称&gt; </code>；</p>
+<p>常用option选项：</p>
+<ul>
+<li><code>--driver</code>：指定网络模式，不指定默认为桥接模式(driver)，一般使用桥接模式较多</li>
+<li><code>--subnet</code>：指定子网，写法为网段 + 掩码，如10.0.0.0/16</li>
+<li><code>--gateway</code>：指定网关地址</li>
+<li><code>--ip-range</code>：指定ip网络内可动态分配的IP范围，写法为网段 + 掩码，如10.0.0.0/16</li>
+</ul>
+<p>示例：<code>docker network create --driver bridge --subnet 10.0.0.0/16 --gateway 10.0.0.254 mynet</code>，该命令创建了一个网络，名称为”mynet”，网络模式为桥接模式（bridge ），子网为10.0.0.0/16，网关为10.0.0.254，此时宿主机网络情况如下</p>
+<p><img src="/WindShadow/Docker/docker%E7%BD%91%E7%BB%9C/mynet.svg"></p>
+<h4 id="docker-network-ls"><a href="#docker-network-ls" class="headerlink" title="docker network ls"></a>docker network ls</h4><p>查看当前所有网络；常见命令格式：<code>docker network ls [option]</code>；</p>
+<p>示例：<code>docker network ls -f &#39;driver=bridge&#39;</code>：查看所有网络中网络模式为桥接的网络。</p>
+<h4 id="docker-network-inspect"><a href="#docker-network-inspect" class="headerlink" title="docker network inspect"></a>docker network inspect</h4><p>查看网络详情；常见命令格式：<code>docker network inspect &lt;网络id或网络名称&gt;</code>；</p>
+<p>该命令可查看网络创建时的基本信息和使用该网络的容器信息等。</p>
+<h4 id="docker-network-rm"><a href="#docker-network-rm" class="headerlink" title="docker network rm"></a>docker network rm</h4><p>删除网络；常见命令格式：<code>docker network rm &lt;网络id或网络名称&gt;</code>；</p>
+<h3 id="容器连接或断开网络"><a href="#容器连接或断开网络" class="headerlink" title="容器连接或断开网络"></a>容器连接或断开网络</h3><p>可以使用<code>docker run</code>新建容器时可使用<code>--network</code>或<code>--net</code>将容器连接到指定的网络：<code>docker run -it --net &lt;网络id或网络名&gt; centos</code>，另一种便是使用<code>docker network connect</code>命令。</p>
+<h3 id="docker-network-connect"><a href="#docker-network-connect" class="headerlink" title="docker network connect"></a>docker network connect</h3><p>作用：将容器连接到网络；</p>
+<p>常见的命令格式：<code>docker network connect &lt;网络id或网络名称&gt; [options] &lt;容器名&gt;</code>；</p>
+<p>option选项：</p>
+<ul>
+<li><code>--alias</code> ：指定该容器在该网络中的别名</li>
+<li><code>--ip</code>：指定IP地址（常用）</li>
+<li><code>--ip6</code>：指定IPv6地址</li>
+<li><code>--link</code>：链接到另一个容器</li>
+<li><code>--link-local-ip</code>：添加容器的链接本地地址</li>
+</ul>
+<p><code>docker network connect</code>的选项几乎全都可在<code>docker run</code>时使用。</p>
+<h3 id="docker-network-disconnect"><a href="#docker-network-disconnect" class="headerlink" title="docker network disconnect"></a>docker network disconnect</h3><p>作用：将容器与网络断开；</p>
+<p>常见的命令格式：<code>docker network disconnect [option] &lt;网络id或网络名称&gt; &lt;容器名&gt;</code>；</p>
+<p>断开条件：容器必须正在运行才能将其与网络断开连接；</p>
+<p>option选项：</p>
+<ul>
+<li><code>-f</code>：强制断开容器与网络的连接</li>
+</ul>
+<p>容器连接到网络之后，容器内都有一个默认的DNS服务器配置，这样任意容器之间均可通过容器名互相访问，而不需要像link方式般由hsots文件维护容器名与IP的关系。</p>
+<h3 id="停止、暂停或重启容器对网络的影响"><a href="#停止、暂停或重启容器对网络的影响" class="headerlink" title="停止、暂停或重启容器对网络的影响"></a><strong>停止、暂停或重启容器对网络的影响</strong></h3><p>暂停、重新启动和停止连接到网络的容器，容器在运行时会连接到其配置的网络：</p>
+<ul>
+<li>若未容器指定IP（动态IP），容器启动时自动获取网络内可分配的IP</li>
+<li>若未容器指定了IP（静态IP），容器启动时应用容器的 IP 地址，如果 IP 地址不再可用，则容器无法启动。</li>
+</ul>
+<p>保证 IP 地址可用的一种方法：</p>
+<p>使用<code>--ip-range</code>指定一个网络自动分配的IP的范围，使用<code>--ip</code>给容器指定该范围之外的IP地址（静态IP），可确保在此容器不在网络上时不会将 IP 地址提供给另一个容器。</p>
+<p>如：<code>docker network create --driver bridge --subnet 10.0.0.0/24 --ip-range 10.0.0.0/25 --gateway 10.0.0.254 mynet</code>，创建一个网络名叫”mynet”，子网为10.0.0.0/24，可动态分配的地址范围为10.0.0.0/25，网关为10.0.0.254，新建容器A、容器B、容器C且都加入mynet网络，容器C使用<code>--ip</code>指定IP地址。</p>
+<p><img src="/WindShadow/Docker/docker%E7%BD%91%E7%BB%9C/docker%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BD%91%E7%BB%9C.svg"></p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://windmo.github.io/WindShadow/Docker/docker%E7%BD%91%E7%BB%9C/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://windmo.github.io/WindShadow/Docker/docker%E7%BD%91%E7%BB%9C/";
+            const title         = "「Docker网络」";
+            const excerpt       = `docker0网卡服务器安装了docker，就会有一个网卡docker0，docker0网卡使用nat直连到服务器的物理网卡。
+
+evth-pairevth-pari 是一种虚拟网络设备，是一对的虚拟设备接口，它们都是成对出现的，一端...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2021-06-02</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Docker基础" href="/WindShadow/Docker/docker基础/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Docker容器数据卷" href="/WindShadow/Docker/docker容器数据卷/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by WindShadow-mo.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

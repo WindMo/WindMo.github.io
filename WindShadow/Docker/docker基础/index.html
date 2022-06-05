@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/jx.jpg">
+  <title>Docker基础 | 风的影子</title>
+  <meta name="author" content="WindShadow-mo" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="Docker基础知识Docker的基本组成  镜像（image)： docker镜像就好比是一个模板，可以通过这个模板来创建容器对外提供服务，如通过tomcat镜像创建一个tomcat容器，容器内的tomcat运行我们的war包对外提供服务，而一个镜像可以创建多个容器，我们不需要像传统部署一样每次都手动部署war，修改端口配置等。  容器(container)： Docker利用容器技术，独立运行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker基础">
+<meta property="og:url" content="https://windmo.github.io/WindShadow/Docker/docker%E5%9F%BA%E7%A1%80/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="Docker基础知识Docker的基本组成  镜像（image)： docker镜像就好比是一个模板，可以通过这个模板来创建容器对外提供服务，如通过tomcat镜像创建一个tomcat容器，容器内的tomcat运行我们的war包对外提供服务，而一个镜像可以创建多个容器，我们不需要像传统部署一样每次都手动部署war，修改端口配置等。  容器(container)： Docker利用容器技术，独立运行">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://windmo.github.io/images/jx.jpg">
+<meta property="article:published_time" content="2021-05-21T12:31:15.199Z">
+<meta property="article:modified_time" content="2021-07-18T16:28:32.664Z">
+<meta property="article:author" content="WindShadow-mo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://windmo.github.io/images/jx.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-file"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/about"><i class="fa fa-paper-plane"></i>关于</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>WindShadow</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/jx0.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">风的影子</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/">web基础扫盲</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/JVM/Garbage-Collection/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/%E4%BD%95%E4%B8%BAJava%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/"><i class="fa  fa-book"></i> 何为Java线程中断</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa  fa-book"></i> Java线程池原理（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/"><i class="fa  fa-book"></i> MySql索引详解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E4%BA%8B%E5%8A%A1/"><i class="fa  fa-book"></i> MySql事务</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">Docker基础</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2021-05-21</li>
+                <li><i class="fa fa-user"></i> 作者 WindShadow-mo</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~7.76K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1626625712664"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+            <hr />
+            <h2 id="Docker基础知识"><a href="#Docker基础知识" class="headerlink" title="Docker基础知识"></a>Docker基础知识</h2><h3 id="Docker的基本组成"><a href="#Docker的基本组成" class="headerlink" title="Docker的基本组成"></a>Docker的基本组成</h3><p><img src="/WindShadow/Docker/docker%E5%9F%BA%E7%A1%80/docker.png"></p>
+<ul>
+<li><p>镜像（image)：</p>
+<p>docker镜像就好比是一个模板，可以通过这个模板来创建容器对外提供服务，如通过tomcat镜像创建一个tomcat容器，容器内的tomcat运行我们的war包对外提供服务，而一个镜像可以创建多个容器，我们不需要像传统部署一样每次都手动部署war，修改端口配置等。</p>
+</li>
+<li><p>容器(container)：</p>
+<p>Docker利用容器技术，独立运行一个或者一组应用，容器通过镜像来创建。对容器的基本操作有启动，停止，删除等，可以把这个容器理解为就是一个简易的Linux系统。</p>
+</li>
+<li><p>仓库(repository)：</p>
+<p>仓库就是存放镜像的地方，仓库分为公有仓库和私有仓库，类似GitHub，DockerHub便是镜像仓库。</p>
+</li>
+</ul>
+<h3 id="Docker如何工作"><a href="#Docker如何工作" class="headerlink" title="Docker如何工作"></a>Docker如何工作</h3><p>Docker是一个Client-Server结构的系统，Docker的守护进程运行在主机上。通过Socket从客户端访问！Docker-Server接收到Docker-Client的指令并执行。</p>
+<p><img src="/WindShadow/Docker/docker%E5%9F%BA%E7%A1%80/docker-cs.png"></p>
+<h3 id="为什么Docker比VM快"><a href="#为什么Docker比VM快" class="headerlink" title="为什么Docker比VM快"></a>为什么Docker比VM快</h3><ol>
+<li><p>docker有着比虚拟机更少的抽象层。由于docker不需要Hypervisor实现硬件资源虚拟化,运行在docker容器上的程序直接使用的都是实际物理机的硬件资源。因此在CPU、内存利用率上docker将会在效率上有明显优势。</p>
+<p><img src="/WindShadow/Docker/docker%E5%9F%BA%E7%A1%80/docker-vs-vm.png"></p>
+</li>
+<li><p>docker利用的是宿主机的内核,而不需要Guest OS。</p>
+</li>
+</ol>
+<p>当docker新建一个容器时，docker不需要和虚拟机一样重新加载一个操作系统内核，避免了引导、加载操作系统内核返个比较费时费资源的过程。VM新建一个虚拟机时，虚拟机软件需要加载GuestOS，而docker由于直接利用宿主机的操作系统,则省略了这个复杂的过程</p>
+<ul>
+<li>Hypervisor：虚拟机监视器（virtual machine monitor，缩写为 VMM），是用来建立与执行虚拟机器的软件、固件或硬件。</li>
+<li>GuestOS： VM（虚拟机）里的的系统（OS）</li>
+<li>HostOS：物理机里的系统（OS）</li>
+</ul>
+<h2 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h2><p>Docker的安装要求Linux在内核3.0以上</p>
+<p>官方安装文档：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/">https://docs.docker.com/engine/install/ </a></p>
+<h2 id="帮助命令"><a href="#帮助命令" class="headerlink" title="帮助命令"></a>帮助命令</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 显示docker版本</span></span><br><span class="line">docker version</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看镜像容器数量等信息</span></span><br><span class="line">dcoker info </span><br><span class="line"><span class="meta">#</span><span class="bash"> 帮助命令，查看某个命令如何使用</span></span><br><span class="line">docker &lt;命令&gt; --help</span><br></pre></td></tr></table></figure>
+
+<p>docker全部命令官方文档：<a target="_blank" rel="noopener" href="https://docs.docker.com/reference/">https://docs.docker.com/reference/</a></p>
+<h2 id="操作镜像"><a href="#操作镜像" class="headerlink" title="操作镜像"></a>操作镜像</h2><h3 id="docker-images"><a href="#docker-images" class="headerlink" title="docker images"></a>docker images</h3><p>作用：查看镜像</p>
+<ul>
+<li><p><code>docker images</code>查看当前系统的镜像（默认隐藏中间的镜像）</p>
+</li>
+<li><p><code>docker images -a</code>查看全部镜像，包括中间层的镜像</p>
+</li>
+<li><p><code>docker images -q</code>查看镜像，仅显示镜像id</p>
+</li>
+<li><p><code>docker images -f &lt;key=valu&gt;</code>查看镜像，根据条件过滤</p>
+<p>key的范围：</p>
+<ul>
+<li>dangling：显示标记为<code>&lt;none&gt;</code>的镜像，取值范围：true | false，如：<code>docker images -f dangling=true</code></li>
+<li>label：根据标签进行过滤，其中lable的值，是docker在编译的时候配置的或者在Dockerfile中配置的</li>
+<li>before：根据某个镜像的构建时间进行过滤，before的value表示某个镜像构建时间之前的镜像列表，如：<code>docker images -f before=mysql</code></li>
+<li>since：跟before正好相反，表示的是在某个镜像构建之后构建的镜像</li>
+<li>reference：添加正则进行匹配，如：<code>docker images -f reference=&quot;*:latest&quot;</code>（查询版本为最新版本的镜像）</li>
+</ul>
+</li>
+</ul>
+<h3 id="docker-search"><a href="#docker-search" class="headerlink" title="docker search"></a>docker search</h3><p>作用：搜索远程仓库的镜像</p>
+<p>如：<code>docker search mysql -f STARS=3000</code>（查询远程仓库镜像,查询mysql的镜像，且stars数量大于等于3000）</p>
+<h3 id="docker-pull"><a href="#docker-pull" class="headerlink" title="docker pull"></a>docker pull</h3><p>作用：从远程仓库拉取镜像</p>
+<p>格式<code>docker pull &lt;镜像名[:版本]&gt;</code>，等价于<code>docker image pull &lt;镜像名[:版本]&gt;</code>，如<code>docker pull mysql</code>（拉取mysql镜像，默认拉取最新版，latest），<code>docker pull mysql:5.7</code>（拉取mysql5.7镜像）</p>
+<h3 id="docker-rmi"><a href="#docker-rmi" class="headerlink" title="docker rmi"></a>docker rmi</h3><p>作用：删除镜像</p>
+<p>格式：<code>docker rmi &lt;镜像名或镜像ID&gt;</code> ，等价于<code>docker image rm &lt;镜像名或镜像ID&gt;</code> 。镜像删除时，docker默认不允许删除正在运行的容器所引用的镜像，除非指定-f选项。</p>
+<ul>
+<li><code>docker rmi mysql</code>（删除mysql的镜像）</li>
+<li>删除时可通过<code>镜像名:tag</code>指定版本（标签）。如：<code>docker rmi mysql:5.7</code>这实际上只会删除mysql镜像为5.7的标签，除非该镜像仅有此标签，那么镜像就真的被删除</li>
+<li><code>docker rmi -f mysql</code>：强制删除镜像</li>
+<li><code>docker rmi -f $(docker images -aq)</code> （强制删除全部镜像，先查出id后删除）</li>
+<li><code>docker images -q|xargs docker rmi</code>：使用管道符传参进行删除</li>
+<li><code>docker rmi -no-prune</code>：不移除该镜像的过程镜像，默认移除</li>
+<li>同一镜像有多个tag情况下，执行 <code>docker rmi &lt;镜像ID&gt;</code> 指令无法删除</li>
+</ul>
+<h2 id="操作容器"><a href="#操作容器" class="headerlink" title="操作容器"></a>操作容器</h2><p>扫盲：容器通过镜像创建而来，镜像与容器为1对多的关系。</p>
+<h3 id="docker-run"><a href="#docker-run" class="headerlink" title="docker run"></a>docker run</h3><p>作用：新建并运行容器</p>
+<p><code>docker run</code>等价于<code>docker container run</code></p>
+<p>常见命令格式：<code>docker run [option1][option2] &lt;镜像id或名称&gt;</code>，如：<code>docker run --name=mysql-test mysql:5.7</code>（使用mysql5.7镜像新建并运行一个容器，容器名为“mysql-test”）。</p>
+<p>docker run 命令支持的option非常多，介绍部分option：</p>
+<ul>
+<li>–name：指定容器名称</li>
+<li>-i：以交互模式运行容器，通常与 -t 同时使用</li>
+<li>-t：为容器重新分配一个伪终端，通常与 -i 使用</li>
+<li>-d：以后台模式运行容器，并返回容器id，即启动守护式容器</li>
+<li>-v：挂载卷（此处不展开讲，见下文）</li>
+<li>-P：随机映射宿主机一个端口到容器内的一个端口</li>
+<li>-p：指定端口映射，模式如下：<ul>
+<li><code>ip:&lt;宿主机端口&gt;:&lt;容器端口&gt;</code>：宿主机IP+端口映射到容器内端口（如多网卡时）</li>
+<li><code>ip::&lt;容器端口&gt;</code>：自动选择宿主机端口（包含宿主机所有IP）映射到容器内端口</li>
+<li><code>&lt;宿主机端口&gt;:&lt;容器端口&gt;</code>：宿主机端口映射到容器内端口</li>
+</ul>
+</li>
+<li>–rm：容器停止时删除容器</li>
+</ul>
+<h3 id="docker-create"><a href="#docker-create" class="headerlink" title="docker create"></a>docker create</h3><p>作用：新建容器，但不启动</p>
+<p>常见命令格式：<code>docker create[option1][option2] &lt;镜像id或名称&gt;</code>，option选项参数含义与run类似但不是全都支持</p>
+<h3 id="docker-ps"><a href="#docker-ps" class="headerlink" title="docker ps"></a>docker ps</h3><p>作用：查看容器的运行状况，类似linux的ps命令查看进程的运行状态</p>
+<p><code>docker ps</code>等价于<code>docker container list</code>等价于<code>docker container ls</code></p>
+<ul>
+<li><code>docker ps</code>：列出正在运行的容器</li>
+<li><code>docker ps -a</code>：列出全部容器，包括历史记录中已经停止的容器</li>
+<li><code>docker ps -q</code>：列出正在运行的容器，仅显示容器id</li>
+<li><code>docker ps -n=?</code>：列出最近创建的?个容器</li>
+<li><code>docker ps -l</code>：列出最近创建的上个容器，即<code>docker ps -n=1</code></li>
+</ul>
+<h3 id="docker-stop"><a href="#docker-stop" class="headerlink" title="docker stop"></a>docker stop</h3><p>作用：停止正在运行的容器</p>
+<p>常见命令格式：<code>docker stop &lt;容器id或容器名&gt;</code>，如：</p>
+<ul>
+<li><code>docker stop mysql-test</code>：停止容器名为mysql-test的容器</li>
+<li><code>docker stop d29f876f66d5</code>：停止容器id为d29f876f66d5的容器</li>
+</ul>
+<h3 id="docker-kill"><a href="#docker-kill" class="headerlink" title="docker kill"></a>docker kill</h3><p>作用：强制停止正在运行的容器，类似linux的kill命令</p>
+<p>常见命令格式：<code>docker kill &lt;容器id或容器名&gt;</code>，如：</p>
+<ul>
+<li><code>docker kill mysql-test</code>：强制停止容器名为mysql-test的容器</li>
+</ul>
+<h3 id="docker-start"><a href="#docker-start" class="headerlink" title="docker start"></a>docker start</h3><p>作用：启动容器</p>
+<p>常见命令格式：<code>docker start &lt;容器id或容器名&gt;</code>，如：</p>
+<ul>
+<li><code>docker start mysql-test</code>：启动容器名为mysql-test的容器</li>
+</ul>
+<h3 id="docker-restart"><a href="#docker-restart" class="headerlink" title="docker restart"></a>docker restart</h3><p>作用：重启容器</p>
+<p>常见命令格式：<code>docker restart &lt;容器id或容器名&gt;</code>，如：</p>
+<ul>
+<li><code>docker restartmysql-test</code>：重启容器名为mysql-test的容器</li>
+</ul>
+<h3 id="docker-rm"><a href="#docker-rm" class="headerlink" title="docker rm"></a>docker rm</h3><p>作用：删除容器</p>
+<p>正常情况下正在运行的容器不可删除。</p>
+<p>常见命令格式：<code>docker rm &lt;容器id或容器名&gt;</code>，如：</p>
+<ul>
+<li><code>docker rm mysql-test</code>：删除容器名为mysql-test的容器</li>
+<li><code>docker rm -f mysql-test</code>：强制删除容器名为mysql-test的容器，即使该容器正在运行</li>
+</ul>
+<h2 id="与容器交互"><a href="#与容器交互" class="headerlink" title="与容器交互"></a>与容器交互</h2><h3 id="docker-attach"><a href="#docker-attach" class="headerlink" title="docker attach"></a>docker attach</h3><p>常见命令格式：<code>docker attach &lt;容器id或容器名&gt;</code>，此命令将进入容器正在执行的终端，如容器启动的前台进程是SpringBoot的jar（以前台模式启动），那么此方式进入容器后看到的就是SpringBoot应用的控制台打印的日志。</p>
+<h3 id="docker-exec"><a href="#docker-exec" class="headerlink" title="docker exec"></a>docker exec</h3><p>常见命令格式：<code>docker exec [option] &lt;容器id或容器名&gt;</code>，进入当前容器后开启一个新的终端，option选项常用有：</p>
+<ul>
+<li>-i：即使没有附加也保持STDIN（标准输入）打开</li>
+<li>-t：分配一个伪终端</li>
+<li>-d：分离模式: 在后台运行</li>
+</ul>
+<p>选项意义与run命令的选项类似，如：</p>
+<ul>
+<li><code>docker exec -it mysql-test /bin/bash</code>：我们想进入容器，执行任何命令，就像平时使用linux那样，可同时指定<code>-it</code>选项。</li>
+<li><code>docker exec -t mysql-test ls /</code>：我们想查看某一目录下的文件信息，可以仅指定<code>-t</code>选项来进行回显，执行完毕后就退出了容器。</li>
+<li><code>docker exec -i mysql-test /bin/bash</code>：当使用<code>-i</code>选项执行<code>/bin/bash</code>时，由于标准输入打开，我们可以输入其它命令，但是此时是没有回显的。正常情况下只能用Ctr+C结束与之的交互，此时容器内由”/bin/bash”命令创建的进程不会被结束。</li>
+<li><code>docker exec mysql-test ls</code>：不带option，有回显，命令执行完毕后，docker发现没有前台进程，退出容器。</li>
+</ul>
+<p>单独使用<code>-i</code>的场景不多，更多使用的是<code>-t</code>和<code>-it</code>。笔者这里对这几个选项的描述可能并不是特别准确，心里明白但无法用文字完美诠释，读者还是自己实操理解会好些。</p>
+<h3 id="退出容器"><a href="#退出容器" class="headerlink" title="退出容器"></a>退出容器</h3><ul>
+<li>docker attach方式进入容器：按下Ctrl+P+Q退出，如果使用exit退出终端或Ctrl+c方式结束当前前台进程，会导致容器停止！如果使用<code>docker attach --sig-proxy=false &lt;容器id或容器名&gt;</code>进入容器，则可以使用Ctrl+c方式退出</li>
+<li>docker exec方式进入容器：按下Ctrl+P+Q退出，或以exit命令退出当前终端以退出容器。</li>
+</ul>
+<p>两种进入容器的方式使用Ctrl+P+Q退出时，容器不会停止，因为此种方式会保留进入容器时的执行该命令的进程，容器不会退出，如果一个容器已经后台运行，我们以<code>docker exec -it</code>进入容器时，最好以exit命令退出，容器不会保留终端进程。如果是以docker attach方式进入，此时我们来到了容器守护的前台进程，一定要以Ctrl+P+Q方式退出，否则容器会停止。</p>
+<h2 id="容器内外的文件传输"><a href="#容器内外的文件传输" class="headerlink" title="容器内外的文件传输"></a>容器内外的文件传输</h2><h3 id="docker-cp"><a href="#docker-cp" class="headerlink" title="docker cp"></a>docker cp</h3><p>作用：从容器内拷贝文件（文件夹也是文件）到宿主机上</p>
+<p>常见命令格式：<code>docker cp [option] &lt;srcPath&gt; &lt;destPath&gt;</code></p>
+<ul>
+<li>option选项：-L，以保持源目标中的链接 </li>
+<li>srcPath与destPath分两种情况：<ul>
+<li>容器内拷贝文件到容器外：<code>docker cp &lt;容器id或容器名&gt;:&lt;容器内路径&gt; &lt;主机路径&gt;</code></li>
+<li>容器外拷贝文件到容器内：<code>docker cp &lt;主机目的路径&gt; &lt;容器id或容器名&gt;:&lt;容器内路径&gt; </code>，容器内的路径不存在则创建，即重命名</li>
+</ul>
+</li>
+</ul>
+<h3 id="容器数据卷"><a href="#容器数据卷" class="headerlink" title="容器数据卷"></a>容器数据卷</h3><p><a href="../docker%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7">《Docker容器数据卷》篇</a></p>
+<h2 id="容器内外的网络连通"><a href="#容器内外的网络连通" class="headerlink" title="容器内外的网络连通"></a>容器内外的网络连通</h2><h3 id="端口映射"><a href="#端口映射" class="headerlink" title="端口映射"></a>端口映射</h3><p>使用run命令时指定端口映射，前文提到过，见<code>docker run</code>命令的<code>-p</code>与<code>-P</code>选项。</p>
+<h3 id="Docker网络"><a href="#Docker网络" class="headerlink" title="Docker网络"></a>Docker网络</h3><p><a href="../docker%E7%BD%91%E7%BB%9C/">《Docker网络》篇</a></p>
+<h2 id="容器的日志"><a href="#容器的日志" class="headerlink" title="容器的日志"></a>容器的日志</h2><h3 id="docker-logs"><a href="#docker-logs" class="headerlink" title="docker logs"></a>docker logs</h3><p>作用：查看容器运行产生的日志</p>
+<p>命令格式：<code>docker logs [oprion1][option2] &lt;容器id或容器名&gt; </code>，常用option：</p>
+<ul>
+<li><code>docker logs mysql-test</code> ：查看容器名为mysql-test的日志</li>
+<li><code>docker logs -f mysql-test</code> ：查看且跟踪容器名为mysql-test的日志</li>
+<li><code>docker logs -f mysql-test</code> ：查看且跟踪容器名为mysql-test的日志</li>
+<li><code>docker logs -n=100 mysql-test</code> ：查看容器名为mysql-test的最后100行日志</li>
+<li><code>docker logs --since=2021-02-01 mysql-test</code>：查看容器名为mysql-test自2021年2月1日以来的日志</li>
+<li><code>docker logs --since=2021-02-01T00:00 mysql-test</code>：查看容器名为mysql-test自2021年2月1日00:00以来的日志</li>
+<li><code>docker logs --since=2021-02-01T00:00:00 mysql-test</code>：查看容器名为mysql-test自2021年2月1日00:00:00以来的日志</li>
+</ul>
+<h2 id="查看镜像或容器元数据"><a href="#查看镜像或容器元数据" class="headerlink" title="查看镜像或容器元数据"></a>查看镜像或容器元数据</h2><p>镜像或容器元数据：镜像或容器的详细信息，镜像元数据包括镜像完整id、构建时间等，容器元数据包括数据卷、网络等信息。</p>
+<h3 id="docker-inspect"><a href="#docker-inspect" class="headerlink" title="docker inspect"></a>docker inspect</h3><ul>
+<li><p><code>docker inspect &lt;镜像名或镜像ID&gt;</code>（查看镜像元数据）</p>
+<ul>
+<li><code>docker inspect java</code>：查看java（latest版本）的镜像元数据</li>
+<li><code>docker inspect java:7</code>：查看java7的镜像元数据</li>
+</ul>
+</li>
+<li><p><code>docker inspect &lt;容器名或容器ID&gt;</code>（查看容器元数据）</p>
+<ul>
+<li><code>docker inspect mysql-test</code>：查看容器名为mysql-test的容器元数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="Docker镜像原理"><a href="#Docker镜像原理" class="headerlink" title="Docker镜像原理"></a>Docker镜像原理</h2><p>镜像是一种轻量级、可执行的独立软件包，用来打包软件运行环境和基于运行环境开发的软件，它包含运行某个软件所需的所有内容，包括代码、运行时库、环境变量和配置文件。</p>
+<h3 id="镜像加载原理"><a href="#镜像加载原理" class="headerlink" title="镜像加载原理"></a>镜像加载原理</h3><h4 id="UnionFS（联合文件系统）"><a href="#UnionFS（联合文件系统）" class="headerlink" title="UnionFS（联合文件系统）"></a>UnionFS（联合文件系统）</h4><p>复制粘贴一下概念：Union文件系统（UnionFS）是一种分层、轻量级并且高性能的文件系统，他支持对文件系统的修改作为一次提交来一层层的叠加，同时可以将不同目录挂载到同一个虚拟文件系统下。Union文件系统是 Docker镜像的基础。镜像可以通过分层来进行继承，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。特性：一次同时加载多个文件系统，但从外面看起来，只能看到一个文件系统，联合加载会把各层文件系统叠加起来，这样最终的文件系统会包含所有底层的文件和目录。</p>
+<p>UFS可以类比git的commit进行理解。</p>
+<p>docker的镜像实际上由一层一层的联合文件系统组成。</p>
+<p><img src="/WindShadow/Docker/docker%E5%9F%BA%E7%A1%80/dockerUFS.png"></p>
+<p><strong>boots</strong>(boot file system）：主要包含 bootloader和 Kernel, bootloader主要是引导加 kernel, Linux刚启动时会加bootfs文件系统，在Docker镜像的最底层是 boots。这一层与我们典型的Linux/Unix系统是一样的，包含boot加載器和内核。当boot加载完成之后整个内核就都在内存中了，此时内存的使用权已由 bootfs转交给内核，此时系统也会卸载bootfs。<br><strong>rootfs</strong>（root file system)：在 bootfs之上。包含的就是典型 Linux系统中的/dev,/proc,/bin,/etc等标准目录和文件。 rootfs就是各种不同的操作系统发行版，比如 Ubuntu, Centos等等。</p>
+<p>平时我们安装进虚拟机的CentOS都是好几个G，为什么Docker这里才200M？</p>
+<p><img src="/WindShadow/Docker/docker%E5%9F%BA%E7%A1%80/docker-centos.png"></p>
+<p>对于个精简的OS，rootfs可以很小，只需要包合最基本的命令，工具和程序库就可以了，因为底层直接用宿主机的kernel，自己只需要提供rootfs就可以了。由此可见对于不同的Linux发行版， boots基本是一致的，rootfs会有差別，因此不同的发行版可以公用bootfs。</p>
+<h3 id="镜像的分层"><a href="#镜像的分层" class="headerlink" title="镜像的分层"></a>镜像的分层</h3><p>基于UFS的特点，大多数docker镜像都是由多层镜像“叠加”而来的，所有的 Docker镜像都起始于一个基础镜像层，当进行修改或培加新的内容时，就会在当前镜像层之上，创建新的镜像层，为什么Docker镜像要采用这种分层的结构呢？</p>
+<p>最大的好处，莫过于资源共享了！比如有多个镜像都从相同的Base镜像构建而来，那么宿主机只需在磁盘上保留一份base镜像，同时内存中也只需要加载一份base镜像，这样就可以为所有的容器服务了，而且镜像的每一层都可以被共享。类似于面向对象多态的体现之一：类的继承。</p>
+<h3 id="镜像与容器的联系"><a href="#镜像与容器的联系" class="headerlink" title="镜像与容器的联系"></a>镜像与容器的联系</h3><p>Docker 镜像都是只读的，当容器启动时，一个新的可写层加载到镜像的顶部，这一层就是我们通常说的容器层，容器之下的都叫镜像层。</p>
+<p><img src="/WindShadow/Docker/docker%E5%9F%BA%E7%A1%80/container.jpg"></p>
+<p>如果想要保存当前容器的状态，就可以通过<code>docker commit</code>来提交（此处不将commit命令），获得一个镜像，就好比我们我们使用虚拟机的快照。</p>
+<hr>
+<p><strong>本文参考B站UP主“狂神说Java”<a target="_blank" rel="noopener" href="https://space.bilibili.com/95256449/%E7%9A%84docker%E6%95%99%E5%AD%A6%E8%A7%86%E9%A2%91%E8%BF%9B%E8%A1%8C%E6%95%B4%E7%90%86%E3%80%82">https://space.bilibili.com/95256449/的docker教学视频进行整理。</a></strong></p>
+<p><strong>感谢成长路上为在下传道受业解惑之人</strong></p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://windmo.github.io/WindShadow/Docker/docker%E5%9F%BA%E7%A1%80/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://windmo.github.io/WindShadow/Docker/docker%E5%9F%BA%E7%A1%80/";
+            const title         = "「Docker基础」";
+            const excerpt       = `Docker基础知识Docker的基本组成
+
+镜像（image)：
+docker镜像就好比是一个模板，可以通过这个模板来创建容器对外提供服务，如通过tomcat镜像创建一个tomcat容器，容器内的tomcat运行我们的war包对外提...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2021-07-19</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" cookie session localStorage sessionStorage" href="/WindShadow/web基础扫盲/cookie session localStorage sessionStorage/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Docker网络" href="/WindShadow/Docker/docker网络/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by WindShadow-mo.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/jx.jpg">
+  <title>SpringBoot使用ssl | 风的影子</title>
+  <meta name="author" content="WindShadow-mo" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="keytoolJDK自带的keytool是一个证书工具，位于\bin\keytool.exe（linux同理），用它可以生成ssl证书。 使用 keytool -help 查看可用命令 12345678910111213141516-certreq            生成证书请求-changealias        更改条目的别名-delete             删除条目-export">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot使用ssl">
+<meta property="og:url" content="https://windmo.github.io/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="keytoolJDK自带的keytool是一个证书工具，位于\bin\keytool.exe（linux同理），用它可以生成ssl证书。 使用 keytool -help 查看可用命令 12345678910111213141516-certreq            生成证书请求-changealias        更改条目的别名-delete             删除条目-export">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://windmo.github.io/images/jx.jpg">
+<meta property="article:published_time" content="2021-02-28T11:06:07.931Z">
+<meta property="article:modified_time" content="2021-03-13T15:12:39.477Z">
+<meta property="article:author" content="WindShadow-mo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://windmo.github.io/images/jx.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-file"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/about"><i class="fa fa-paper-plane"></i>关于</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>WindShadow</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/jx0.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">风的影子</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/">web基础扫盲</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/JVM/Garbage-Collection/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/%E4%BD%95%E4%B8%BAJava%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/"><i class="fa  fa-book"></i> 何为Java线程中断</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa  fa-book"></i> Java线程池原理（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/"><i class="fa  fa-book"></i> MySql索引详解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/WindShadow/MySql/MySql%E4%BA%8B%E5%8A%A1/"><i class="fa  fa-book"></i> MySql事务</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">SpringBoot使用ssl</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2021-02-28</li>
+                <li><i class="fa fa-user"></i> 作者 WindShadow-mo</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~4.61K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1615648359477"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+            <hr />
+            <h2 id="keytool"><a href="#keytool" class="headerlink" title="keytool"></a>keytool</h2><p>JDK自带的keytool是一个证书工具，位于<JAVA_HOME>\bin\keytool.exe（linux同理），用它可以生成ssl证书。</JAVA_HOME></p>
+<p>使用 <code>keytool -help</code> 查看可用命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">-certreq            生成证书请求</span><br><span class="line">-changealias        更改条目的别名</span><br><span class="line">-delete             删除条目</span><br><span class="line">-exportcert         导出证书</span><br><span class="line">-genkeypair         生成密钥对</span><br><span class="line">-genseckey          生成密钥</span><br><span class="line">-gencert            根据证书请求生成证书</span><br><span class="line">-importcert         导入证书或证书链</span><br><span class="line">-importpass         导入口令</span><br><span class="line">-importkeystore     从其他密钥库导入一个或所有条目</span><br><span class="line">-keypasswd          更改条目的密钥口令</span><br><span class="line">-list               列出密钥库中的条目</span><br><span class="line">-printcert          打印证书内容</span><br><span class="line">-printcertreq       打印证书请求的内容</span><br><span class="line">-printcrl           打印 CRL 文件的内容</span><br><span class="line">-storepasswd        更改密钥库的存储口令</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>keytool -command_name -help</code>查看命令用法</p>
+<h3 id="生成密钥库"><a href="#生成密钥库" class="headerlink" title="生成密钥库"></a>生成密钥库</h3><p>密钥库可以当作证书仓库来看</p>
+<p><code>keytool -genkeypair [option]</code>或<code>keytool -genkey [option]</code> </p>
+<p>选项：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">-alias &lt;alias&gt;                  要处理的条目的别名</span><br><span class="line">-keyalg &lt;keyalg&gt;                密钥算法名称</span><br><span class="line">-keysize &lt;keysize&gt;              密钥位大小</span><br><span class="line">-sigalg &lt;sigalg&gt;                签名算法名称</span><br><span class="line">-destalias &lt;destalias&gt;          目标别名</span><br><span class="line">-dname &lt;dname&gt;                  唯一判别名</span><br><span class="line">-startdate &lt;startdate&gt;          证书有效期开始日期/时间</span><br><span class="line">-ext &lt;value&gt;                    X.509 扩展</span><br><span class="line">-validity &lt;valDays&gt;             有效天数</span><br><span class="line">-keypass &lt;arg&gt;                  密钥口令</span><br><span class="line">-keystore &lt;keystore&gt;            密钥库名称</span><br><span class="line">-storepass &lt;arg&gt;                密钥库口令</span><br><span class="line">-storetype &lt;storetype&gt;          密钥库类型</span><br><span class="line">-providername &lt;providername&gt;    提供方名称</span><br><span class="line">-providerclass &lt;providerclass&gt;  提供方类名</span><br><span class="line">-providerarg &lt;arg&gt;              提供方参数</span><br><span class="line">-providerpath &lt;pathlist&gt;        提供方类路径</span><br><span class="line">-v                              详细输出</span><br><span class="line">-protected                      通过受保护的机制的口令</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ul>
+<li>-storetype 指定仓库类型， JKS、 JCEKS、 PKCS12等，默认JKS</li>
+<li>-keyalg 指定密钥的算法， RSA、 DSA 等，默认DSA</li>
+<li>-keysize 指定密钥长度，默认2048</li>
+<li>-alias 指定密钥对的别名，该别名是公开的</li>
+<li>-keystore 密钥库的路径及名称</li>
+</ul>
+<p>例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 根据提示挨个输入参数</span></span><br><span class="line">keytool -genkey -alias &lt;密钥库别名&gt; -storetype &lt;密钥库类型&gt; -keyalg &lt;密钥算法名称&gt; -keystore &lt;密钥库路径&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输入参数完毕后将在当前路径生成证书</span></span><br><span class="line">keytool -genkey -alias test -storetype jks -keyalg RSA -keystore test-keystore.jks </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 一次性搞定</span></span><br><span class="line">keytool -genkey -alias &lt;密钥库别名&gt; -storetype &lt;密钥库类型&gt; -keystore &lt;密钥库路径&gt; -keyalg &lt;密钥算法名称&gt; -keysize &lt;密钥位大小&gt; -storepass &lt;密钥库口令&gt; -keypass &lt;密钥口令&gt;  -validity &lt;有效天数&gt; -dname &lt;dname&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接在当前路径生成证书，CN可填多个如：<span class="string">&quot;CN=test1.com, CN=test2.com, OU=test.com, O=ChinaHonker, L=Beijing, S=Beijing, C=086&quot;</span></span></span><br><span class="line">keytool -genkey -alias test -storetype jks -keystore test-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456 -keypass 123456 -validity 3650     -dname &quot;CN=test.com, OU=test.com,O=ChinaHonker, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="dname详解"><a href="#dname详解" class="headerlink" title="dname详解"></a>dname详解</h4><ul>
+<li>CN：Common Name 公用名称，对于 SSL 证书，一般为网站域名；而对于代码签名证书则为申请单位名称；而对于客户端证书则为证书申请者的姓名</li>
+<li>OU：Organization Name 单位名称，对于 SSL 证书，一般为网站域名；而对于代码签名证书则为申请单位名称；而对于客户端单位证书则为证书申请者所在单位名称</li>
+<li>O：Organization 组织</li>
+<li>L： Locality 所在城市</li>
+<li>S：State 所在省份</li>
+<li>C：Country 所在国家，只能填代表国家的双字母或地区代码，如中国：CN或086</li>
+</ul>
+<h3 id="导出证书"><a href="#导出证书" class="headerlink" title="导出证书"></a>导出证书</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -keystore &lt;密钥库路径&gt; -export -alias ws-ssl -file &lt;证书路径&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="导入证书到密钥库"><a href="#导入证书到密钥库" class="headerlink" title="导入证书到密钥库"></a>导入证书到密钥库</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -import -alias &lt;密钥库别名&gt; -file &lt;证书路径&gt; -keystore &lt;密钥库路径&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="转换证书格式"><a href="#转换证书格式" class="headerlink" title="转换证书格式"></a>转换证书格式</h3><p>jks转pkcs12</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -importkeystore -srckeystore &lt;源密钥库路径&gt; -destkeystore &lt;目标密钥库路径&gt; -deststoretype pkcs12</span><br></pre></td></tr></table></figure>
+
+<h2 id="SpringBoot使用ssl"><a href="#SpringBoot使用ssl" class="headerlink" title="SpringBoot使用ssl"></a>SpringBoot使用ssl</h2><p>写一个http接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpsTestController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/ssl&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">helloHttps</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;https ws-ssl&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="http单向认证"><a href="#http单向认证" class="headerlink" title="http单向认证"></a>http单向认证</h3><ol>
+<li>生成一个密钥库，名为“ws-ssl-server.jks”，以jks为例，springboot不支持pkcs12</li>
+<li>将密钥库放到资源文件夹下，并在配置文件中配置ssl</li>
+</ol>
+<p><img src="/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/%E5%8D%95%E5%90%91%E9%85%8D%E7%BD%AE.png" alt="单向配置"></p>
+<p>配置文件如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8443</span></span><br><span class="line">  <span class="attr">ssl:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">key-store:</span> <span class="string">classpath:ssl/ws-ssl-server.jks</span></span><br><span class="line">    <span class="attr">key-store-type:</span> <span class="string">JKS</span></span><br><span class="line">    <span class="attr">key-store-password:</span> <span class="string">123456server</span></span><br><span class="line">    <span class="attr">key-alias:</span> <span class="string">ws-ssl-server</span></span><br><span class="line">    <span class="attr">client-auth:</span> <span class="string">none</span></span><br></pre></td></tr></table></figure>
+
+<p>测试结果：浏览器警告并显示不安全连接</p>
+<p><img src="/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/%E5%8D%95%E9%A1%B9-%E6%B5%8B%E8%AF%95.png" alt="单项-测试"></p>
+<h3 id="http双向认证"><a href="#http双向认证" class="headerlink" title="http双向认证"></a>http双向认证</h3><ol>
+<li><p>在单向认证基础上，再创建一个密钥库，名为“ws-ssl-client.jks”，类型为jks；此时拥有两个密钥库（服务端与客户端）“ws-ssl-server.jks”和“ws-ssl-client.jks”</p>
+</li>
+<li><p>这两个密钥库分别导出一个证书，分别为：“ws-ssl-server.cer”、”ws-ssl-client.cer”</p>
+<p><img src="/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/%E4%BB%93%E5%BA%93%E4%B8%8E%E8%AF%81%E4%B9%A64.png" alt="仓库与证书4"></p>
+</li>
+<li><p>将对方的证书导入到自己的密钥库，以上述文件名为例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 客户端cer导入服务端密钥库</span></span><br><span class="line">keytool -import -alias ws-ssl-client -file ws-ssl-client.cer -keystore ws-ssl-server.jks</span><br><span class="line"><span class="meta">#</span><span class="bash"> 服务端cer导入客户端密钥库</span></span><br><span class="line">keytool -import -alias ws-ssl-server -file ws-ssl-server.cer -keystore ws-ssl-client.jks</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将客户端密钥库转为由jks转pkcs12，pkcs12是行业标准格式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -importkeystore -srckeystore ws-ssl-client.jks -destkeystore ws-ssl-client.jks -deststoretype pkcs12</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>此时得到5个文件</p>
+<p><img src="/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/%E4%BB%93%E5%BA%93%E4%B8%8E%E8%AF%81%E4%B9%A65.png" alt="仓库与证书5"></p>
+</li>
+<li><p>将服务端与客户端的密钥库（jks）放到项目中</p>
+<p><img src="/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/%E5%8F%8C%E5%90%91%E9%85%8D%E7%BD%AE.png" alt="双向配置"></p>
+</li>
+<li><p>配置文件如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8443</span></span><br><span class="line">  <span class="attr">ssl:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">key-store:</span> <span class="string">classpath:ssl/ws-ssl-server.jks</span></span><br><span class="line">    <span class="attr">key-store-type:</span> <span class="string">JKS</span></span><br><span class="line">    <span class="attr">key-store-password:</span> <span class="string">123456server</span></span><br><span class="line">    <span class="attr">key-alias:</span> <span class="string">ws-ssl-server</span></span><br><span class="line">    <span class="attr">trust-store:</span> <span class="string">classpath:ssl/ws-ssl-server.jks</span></span><br><span class="line">    <span class="attr">trust-store-type:</span> <span class="string">JKS</span></span><br><span class="line">    <span class="attr">trust-store-password:</span> <span class="string">123456server</span></span><br><span class="line">    <span class="attr">trust-store-provider:</span> <span class="string">SUN</span></span><br><span class="line">    <span class="attr">client-auth:</span> <span class="string">need</span> <span class="comment"># 双向认证</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>访问接口进行测试，会无法访问</p>
+<p><img src="/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/%E5%8F%8C%E5%90%91%E6%B5%8B%E8%AF%951.png" alt="双向测试1"></p>
+<p>此时给浏览器导入客户端证书，重启浏览器后即可访问成功！</p>
+<p><img src="/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/%E5%AF%BC%E5%85%A5%E8%AF%81%E4%B9%A6.png" alt="导入证书"></p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://windmo.github.io/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://windmo.github.io/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/";
+            const title         = "「SpringBoot使用ssl」";
+            const excerpt       = `keytoolJDK自带的keytool是一个证书工具，位于\bin\keytool.exe（linux同理），用它可以生成ssl证书。
+使用 keytool -help 查看可用命令
+12345678910111213141516-...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2021-03-13</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" SpringIOC常用注解和接口" href="/WindShadow/Spring/SpringIOC常用注解和接口/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Nginx原理初探" href="/WindShadow/Nginx/Nginx原理初探/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by WindShadow-mo.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
