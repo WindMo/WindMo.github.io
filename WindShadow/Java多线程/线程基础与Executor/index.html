@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://windmo.github.io/images/jx.jpg">
 <meta property="article:published_time" content="2021-07-10T04:50:25.252Z">
-<meta property="article:modified_time" content="2021-09-02T16:48:18.623Z">
+<meta property="article:modified_time" content="2022-06-09T14:07:54.531Z">
 <meta property="article:author" content="WindShadow-mo">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://windmo.github.io/images/jx.jpg">
@@ -283,7 +283,7 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1630601298623"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1654783674531"></time> 前，其中的内容可能需要更新。
             </div>
             
             <hr />
@@ -351,7 +351,7 @@
 
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">        Thread t1 = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">3000L</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        t1.start();</span><br><span class="line"></span><br><span class="line">        Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">        <span class="comment">// 线程t1依旧在睡眠，其处于等待未超时状态</span></span><br><span class="line">        System.out.println(t1.getState());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>ERMINATED：终止（死亡）状态，代码执行结束或外部干涉导致线程终止，进入死亡状态。</p>
+<li><p>TERMINATED：终止（死亡）状态，代码执行结束或外部干涉导致线程终止，进入死亡状态。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        </span><br><span class="line">        Thread t1 = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line"></span><br><span class="line">           System.out.println(<span class="string">&quot;--- run ---&quot;</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        t1.start();</span><br><span class="line"></span><br><span class="line">        Thread.sleep(<span class="number">1000L</span>);<span class="comment">//</span></span><br><span class="line">        <span class="comment">// 过了1秒，线程t1已经执行完，其处于死亡状态</span></span><br><span class="line">        System.out.println(t1.getState());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 </li>
@@ -535,7 +535,7 @@
                     
                 </div>
                 <div class="pull-date">
-                <span>最后编辑：2021-09-03</span>
+                <span>最后编辑：2022-06-09</span>
                 </div>
             </div>
         </footer>
