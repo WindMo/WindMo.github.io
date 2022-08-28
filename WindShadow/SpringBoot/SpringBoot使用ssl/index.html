@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://windmo.github.io/images/jx.jpg">
 <meta property="article:published_time" content="2021-02-28T11:06:07.931Z">
-<meta property="article:modified_time" content="2022-08-28T16:28:48.032Z">
+<meta property="article:modified_time" content="2022-08-28T16:44:55.139Z">
 <meta property="article:author" content="WindShadow-mo">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://windmo.github.io/images/jx.jpg">
@@ -274,7 +274,7 @@
                     <i class="fa fa-edit"></i> 
                     
                     
-                        ~7.89K
+                        ~7.46K
                     
                     字
                 </li>
@@ -283,7 +283,7 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1661704128032"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1661705095139"></time> 前，其中的内容可能需要更新。
             </div>
             
             <hr />
@@ -307,7 +307,7 @@
 </ul>
 <p>例：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 根据提示挨个输入参数</span></span><br><span class="line">keytool -genkey -alias &lt;密钥库别名&gt; -storetype &lt;密钥库类型&gt; -keyalg &lt;密钥算法名称&gt; -keystore &lt;密钥库路径&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输入参数完毕后将在当前路径生成证书</span></span><br><span class="line">keytool -genkey -alias test -storetype jks -keyalg RSA -keystore test-keystore.jks </span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 一次性搞定</span></span><br><span class="line">keytool -genkey -alias &lt;密钥库别名&gt; -storetype &lt;密钥库类型&gt; -keystore &lt;密钥库路径&gt; -keyalg &lt;密钥算法名称&gt; -keysize &lt;密钥位大小&gt; -storepass &lt;密钥库口令&gt; -keypass &lt;密钥口令&gt;  -validity &lt;有效天数&gt; -dname &lt;dname&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接在当前路径生成证书，CN可填多个如：<span class="string">&quot;CN=test1.com, CN=test2.com, OU=test.com, O=ChinaHonker, L=Beijing, S=Beijing, C=086&quot;</span></span></span><br><span class="line">keytool -genkey -alias ws-ssl-server-keystore -storetype jks -keystore ws-ssl-server-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456serverstore -keypass 123456serverkey -validity 3650 -dname &quot;CN=ws-ssl-server.com, OU=WindShadow,O=WS-Server, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 一次性搞定</span></span><br><span class="line">keytool -genkey -alias &lt;密钥库别名&gt; -storetype &lt;密钥库类型&gt; -keystore &lt;密钥库路径&gt; -keyalg &lt;密钥算法名称&gt; -keysize &lt;密钥位大小&gt; -storepass &lt;密钥库口令&gt; -keypass &lt;密钥口令&gt;  -validity &lt;有效天数&gt; -dname &lt;dname&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接在当前路径生成证书，CN可填多个如：<span class="string">&quot;CN=test1.com, CN=test2.com, OU=test.com, O=ChinaHonker, L=Beijing, S=Beijing, C=086&quot;</span></span></span><br><span class="line">keytool -genkey -alias ws-ssl-server-keystore -storetype jks -keystore ws-ssl-server-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456serverstore -keypass 123456serverkey -validity 3650 -dname &quot;CN=WindShadow, OU=WindShadow,O=WS-Server, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
 
 <h4 id="dname详解"><a href="#dname详解" class="headerlink" title="dname详解"></a>dname详解</h4><ul>
 <li>CN：Common Name 公用名称，对于 SSL 证书，一般为网站域名；而对于代码签名证书则为申请单位名称；而对于客户端证书则为证书申请者的姓名</li>
@@ -331,7 +331,7 @@
 
 <h3 id="http单向认证"><a href="#http单向认证" class="headerlink" title="http单向认证"></a>http单向认证</h3><ol>
 <li><p>生成一个server密钥库，名为“ws-ssl-server-keystore.jks”</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias ws-ssl-server-keystore -storetype jks -keystore ws-ssl-server-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456serverstore -keypass 123456serverkey -validity 3650 -dname &quot;CN=ws-ssl-server.com, OU=WindShadow,O=WS-Server, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias ws-ssl-server-keystore -storetype jks -keystore ws-ssl-server-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456serverstore -keypass 123456serverkey -validity 3650 -dname &quot;CN=WindShadow, OU=WindShadow,O=WS-Server, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
 
 
 
@@ -348,17 +348,15 @@
 <p><img src="/WindShadow/SpringBoot/SpringBoot%E4%BD%BF%E7%94%A8ssl/%E5%8D%95%E9%A1%B9-%E6%B5%8B%E8%AF%95.png" alt="单项-测试"></p>
 <h3 id="http双向认证"><a href="#http双向认证" class="headerlink" title="http双向认证"></a>http双向认证</h3><ol>
 <li><p>在单向认证基础上，再创建一个密钥库，名为“ws-ssl-trust-keystore.jks”；此时拥有两个密钥库“ws-ssl-server-keystore.jks”和“ws-ssl-trust-keystore.jks”</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias ws-ssl-client-keystore -storetype jks -keystore ws-ssl-client-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456clientstore -keypass 123456clientkey -validity 3650 -dname &quot;CN=ws-ssl-server.com, OU=WindShadow,O=WS-Client, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias ws-ssl-client-keystore -storetype jks -keystore ws-ssl-client-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456clientstore -keypass 123456clientkey -validity 3650 -dname &quot;CN=WindShadow, OU=WindShadow,O=WS-Client, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
 
 
 
 </li>
 </ol>
 <ol start="2">
-<li><p>创建server和创建client的信任库</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias ws-ssl-server-trust-keystore -storetype jks -keystore ws-ssl-server-trust-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456servertruststore -keypass 123456servertrustkey -validity 3650 -dname &quot;CN=ws-ssl-server.com, OU=WindShadow,O=WS-Server-Trust, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias ws-ssl-client-trust-keystore -storetype jks -keystore ws-ssl-client-trust-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456clienttruststore -keypass 123456clienttrustkey -validity 3650 -dname &quot;CN=ws-ssl-server.com, OU=WindShadow,O=WS-Client-Trust, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
+<li><p>创建一个信任库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias ws-ssl-trust-keystore -storetype jks -keystore ws-ssl-trust-keystore.jks -keyalg RSA -keysize 2048 -storepass 123456truststore -keypass 123456trustkey -validity 3650 -dname &quot;CN=WindShadow, OU=WindShadow,O=WS-Trust, L=Beijing, S=Beijing, C=086&quot;</span><br></pre></td></tr></table></figure>
 
 
 
@@ -375,8 +373,8 @@
 </li>
 </ol>
 <ol start="4">
-<li><p>将两个证书导入到server的信任库</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">keytool -import -alias ws-ssl-server-keystore -file ws-ssl-server-keystore.cer -keystore ws-ssl-server-trust-keystore.jks -storepass 123456servertruststore -noprompt</span><br><span class="line"></span><br><span class="line">keytool -import -alias ws-ssl-client-keystore -file ws-ssl-client-keystore.cer -keystore ws-ssl-server-trust-keystore.jks -storepass 123456servertruststore -noprompt</span><br></pre></td></tr></table></figure>
+<li><p>将两个证书导入到信任库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">keytool -import -alias ws-ssl-server-keystore -file ws-ssl-server-keystore.cer -keystore ws-ssl-trust-keystore.jks -storepass 123456truststore -noprompt</span><br><span class="line"></span><br><span class="line">keytool -import -alias ws-ssl-client-keystore -file ws-ssl-client-keystore.cer -keystore ws-ssl-trust-keystore.jks -storepass 123456truststore -noprompt</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>将client密钥库转为由jks转pkcs12，pkcs12是行业标准格式</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -importkeystore -srckeystore ws-ssl-client-keystore.jks -srcstoretype jks -srcalias ws-ssl-client-keystore  -srcstorepass 123456clientstore  -srckeypass 123456clientkey -destkeystore ws-ssl-client-keystore.p12 -deststoretype pkcs12 -destalias ws-ssl-client-keystore -deststorepass 123456clientstore -destkeypass 123456clientkey</span><br></pre></td></tr></table></figure>
