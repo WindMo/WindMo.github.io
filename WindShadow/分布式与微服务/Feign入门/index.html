@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <link rel="icon" href="/images/jx.jpg">
   <title>Feign声明式服务调用入门 | 风的影子</title>
-  <meta name="author" content="WindShadow-mo" />
+  <meta name="author" content="浪客千风" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -18,16 +18,16 @@
   <meta name="description" content="小声bb + 一些吐槽下面先bb一些概念性的东西，虽然部分是copy的，但是整理到一起看起来知识点不是那么散，那些上来就哔哔怎么用怎用的博客文章是真没意思，关键写的还不咋的，要么就说的乱七八糟除了他自己没人看得懂，要么就依赖一大堆，搞个Feign的demo还扯那微服务的东西一大堆，依赖Eurake和微服务环境，单独使用不行？除了cv多少带点思考吧。 相信能看到这篇文章的看客们（可能并没有），多多少">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Feign声明式服务调用入门">
-<meta property="og:url" content="https://windmo.github.io/WindShadow/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/Feign%E5%85%A5%E9%97%A8/">
+<meta property="og:url" content="https://blog.windshadow.cn/WindShadow/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/Feign%E5%85%A5%E9%97%A8/">
 <meta property="og:site_name" content="风的影子">
 <meta property="og:description" content="小声bb + 一些吐槽下面先bb一些概念性的东西，虽然部分是copy的，但是整理到一起看起来知识点不是那么散，那些上来就哔哔怎么用怎用的博客文章是真没意思，关键写的还不咋的，要么就说的乱七八糟除了他自己没人看得懂，要么就依赖一大堆，搞个Feign的demo还扯那微服务的东西一大堆，依赖Eurake和微服务环境，单独使用不行？除了cv多少带点思考吧。 相信能看到这篇文章的看客们（可能并没有），多多少">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://windmo.github.io/images/jx.jpg">
+<meta property="og:image" content="https://blog.windshadow.cn/images/jx.jpg">
 <meta property="article:published_time" content="2021-02-15T13:03:17.402Z">
 <meta property="article:modified_time" content="2022-06-13T14:09:24.327Z">
-<meta property="article:author" content="WindShadow-mo">
+<meta property="article:author" content="浪客千风">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://windmo.github.io/images/jx.jpg">
+<meta name="twitter:image" content="https://blog.windshadow.cn/images/jx.jpg">
 <meta name="twitter:site" content="@null">
   
   <!-- 站点验证相关 -->
@@ -132,7 +132,7 @@
                 <div class="desc desc2 animate-box">
                     <a href="/">
                         <h2>风的影子</h2> <br />
-                        <span>WindShadow</span>
+                        <span>浪客千风</span>
                     </a>
                 </div>
             </div>
@@ -156,7 +156,7 @@
         </div>
     </div>
     <div class="textwidget">
-        <p class="text-center">风的影子</p>
+        <p class="text-center">且听风吟 御剑于心</p>
     </div>
 </aside>
             
@@ -275,7 +275,7 @@
             
             <ul class="kratos-post-meta text-center">
                 <li><i class="fa fa-calendar"></i> 2021-02-15</li>
-                <li><i class="fa fa-user"></i> 作者 WindShadow-mo</li>
+                <li><i class="fa fa-user"></i> 作者 浪客千风</li>
                 <li>
                     <i class="fa fa-edit"></i> 
                     
@@ -503,7 +503,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://windmo.github.io/WindShadow/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/Feign%E5%85%A5%E9%97%A8/",
+                text: "https://blog.windshadow.cn/WindShadow/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/Feign%E5%85%A5%E9%97%A8/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -515,7 +515,7 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://windmo.github.io/WindShadow/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/Feign%E5%85%A5%E9%97%A8/";
+            const hostUrl       = "https://blog.windshadow.cn/WindShadow/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/Feign%E5%85%A5%E9%97%A8/";
             const title         = "「Feign声明式服务调用入门」";
             const excerpt       = `小声bb + 一些吐槽下面先bb一些概念性的东西，虽然部分是copy的，但是整理到一起看起来知识点不是那么散，那些上来就哔哔怎么用怎用的博客文章是真没意思，关键写的还不咋的，要么就说的乱七八糟除了他自己没人看得懂，要么就依赖一大堆，搞...`;
             let _URL;
@@ -614,7 +614,7 @@
                         </div>
                         <div>
                             <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
-                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by WindShadow-mo.</li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by 浪客千风.</li>
                         </div>
                         <div>
                             <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
