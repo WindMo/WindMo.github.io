@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/avatar.png">
+  <title>Nginx调优 | 风的影子</title>
+  <meta name="author" content="浪客千风" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="Nginx调优并发数基于nginx的多进程架构，通过合理配置worker_processes、worker_connections、worker_rlimit_nofile参数可调节nginx的最优并发。 worker_processes在nginx配置文件全局块中，通过 worker_processes 参数配置worker 进程数，设置为 auto时，nginx则会自动设置与cpu核心数相同的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx调优">
+<meta property="og:url" content="https://blog.windshadow.cn/nginx%E8%B0%83%E4%BC%98/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="Nginx调优并发数基于nginx的多进程架构，通过合理配置worker_processes、worker_connections、worker_rlimit_nofile参数可调节nginx的最优并发。 worker_processes在nginx配置文件全局块中，通过 worker_processes 参数配置worker 进程数，设置为 auto时，nginx则会自动设置与cpu核心数相同的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta property="article:published_time" content="2021-06-23T16:41:11.610Z">
+<meta property="article:modified_time" content="2021-06-29T15:02:05.616Z">
+<meta property="article:author" content="浪客千风">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-star"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/game"><i class="fa fa-gamepad"></i>游戏</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/about"><i class="fa fa-paper-plane"></i>关于千风</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>浪客千风</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">且听风吟 御剑于心</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80/">web基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/TLS%E8%AF%81%E4%B9%A6%E4%B8%8E%E8%87%AA%E7%AD%BEca/"><i class="fa  fa-book"></i> TLS证书与自签ca</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E4%BD%95%E4%B8%BAJava%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/"><i class="fa  fa-book"></i> 何为Java线程中断</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa  fa-book"></i> Java线程池原理（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/"><i class="fa  fa-book"></i> MySql索引详解</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">Nginx调优</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2021-06-24</li>
+                <li><i class="fa fa-user"></i> 作者 浪客千风</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~3.30K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1624978925616"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+            <hr />
+            <h1 id="Nginx调优"><a href="#Nginx调优" class="headerlink" title="Nginx调优"></a>Nginx调优</h1><h2 id="并发数"><a href="#并发数" class="headerlink" title="并发数"></a>并发数</h2><p>基于nginx的多进程架构，通过合理配置worker_processes、worker_connections、worker_rlimit_nofile参数可调节nginx的最优并发。</p>
+<h3 id="worker-processes"><a href="#worker-processes" class="headerlink" title="worker_processes"></a>worker_processes</h3><p>在nginx配置文件全局块中，通过 worker_processes 参数配置worker 进程数，设置为 auto时，nginx则会自动设置与cpu核心数相同的数量worker 进程。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">worker_processes</span> auto;</span><br></pre></td></tr></table></figure>
+
+<h3 id="worker-connection"><a href="#worker-connection" class="headerlink" title="worker_connection"></a>worker_connection</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">events</span> &#123;</span><br><span class="line">    <span class="attribute">worker_connections</span>  <span class="number">1024</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个值是表示每个worker进程所能建立连接的最大值，所以，一个nginx能建立的最大连接数，应该是 worker_connections * worker_processes。当然，这里说的是最大连接数，对于HTTP请求本地资源来说，能够支持的最大并发数量是worker_connections * worker_processes，如果是支持http1.1的浏览器每次访问要占两个连接（ 并不是request和response响应占用两个连接 ），所以普通的静态访问最大并发数是：worker_connections * worker_processes &#x2F; 2，而如果是HTTP作为反向代理来说，最大并发数量应该是worker_connections * worker_processes &#x2F; 4，因为作为反向代理服务器,每个并发会建立与客户端的连接和与后端服务的连接，即2*2&#x3D;4。</p>
+<h3 id="worker-rlimit-nofile"><a href="#worker-rlimit-nofile" class="headerlink" title="worker_rlimit_nofile"></a>worker_rlimit_nofile</h3><p>这个参数表示worker进程最多能打开的文件句柄数，基于liunx系统ulimit设置<em>（Linux一切皆文件，所有请求过来最终目的访问文件，查看系统文件句柄数最大值（<strong>用户</strong>可以打开文件的最大数目）：ulimit -n；一般root用户是65535，普通用户是1024）</em></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># nginx配置文件全局块</span></span><br><span class="line"><span class="comment"># 配置nginx worker进程最大打开文件数</span></span><br><span class="line"><span class="attribute">worker_rlimit_nofile</span> <span class="number">65535</span>; </span><br></pre></td></tr></table></figure>
+
+<p>worker_rlimit_nofile 理论值应该是最多打开文件数（ulimit -n）与nginx worker进程进程数相除，但是nginx分配请求并不是那么均匀，所以与ulimit -n的值保持一致为优。</p>
+<p>所以 worker_connections 值不能超过 worker_rlimit_nofile ，否则在高并发下可能会出现“too many open files”的异常。</p>
+<h2 id="nginx长连接"><a href="#nginx长连接" class="headerlink" title="nginx长连接"></a>nginx长连接</h2><h3 id="保持和客户端的长连接"><a href="#保持和客户端的长连接" class="headerlink" title="保持和客户端的长连接"></a>保持和客户端的长连接</h3><p>一般情况下，nginx已经自动开启了对客户端（浏览器）连接的keep alive（http1.1）支持。</p>
+<p>同时可设置以下两个配置：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="attribute">keepalive_timeout</span>  <span class="number">120s</span> <span class="number">120s</span>;</span><br><span class="line">    <span class="attribute">keepalive_requests</span> <span class="number">10000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>keepalive_timeout<br>指令格式：keepalive_timeout timeout [header_timeout];</p>
+<p>timeout ：设置keep-alive客户端连接在服务器端保持开启的超时值（默认75s）；值为0即禁用keep-alive客户端连接；<br>header_timeout：可选，在响应的header域中设置一个值“Keep-Alive: timeout&#x3D;time”；通常可不设置；<br>timeout默认75s，一般情况下也够用，对于一些请求比较大的内部服务器通讯的场景，适当加大。</p>
+</li>
+<li><p>keepalive_requests<br>keepalive_requests指令用于设置一个keep-alive连接上可以服务的请求的最大数量，当最大请求数量达到时，连接被关闭，默认为100。</p>
+<p>该参数的工作机制：一个keep alive建立之后，nginx就会为这个连接设置一个计数器，记录这个keep alive的长连接上已经接收并处理的客户端请求的数量。如果达到这个参数设置的最大值时，则nginx会强行关闭这个长连接，逼迫客户端不得不重新建立新的长连接。</p>
+</li>
+</ul>
+<h3 id="保持和server的长连接"><a href="#保持和server的长连接" class="headerlink" title="保持和server的长连接"></a>保持和server的长连接</h3><p>nginx访问后端server（nginx称为upstream，上游服务器）默认用的是短连接的HTTP1.0协议，客户端请求到达时，nginx与后端建立连接，后端响应完毕后主动关闭该连接。</p>
+<p>为了让nginx和后端server之间保持长连接，一般指明nginx请求后端服务的协议为http1.1</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="section">upstream</span>  BACK_SERVER &#123;</span><br><span class="line">        <span class="attribute">server</span>   <span class="number">10.0.0.1:8080</span>  weight=<span class="number">1</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">        <span class="attribute">server</span>   <span class="number">10.0.0.2:8080</span>  weight=<span class="number">1</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">        <span class="attribute">keepalive</span> <span class="number">300</span>;        // 设置空闲连接的最大数量</span><br><span class="line">    &#125;</span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">8080</span>;</span><br><span class="line">        <span class="attribute">server_name</span> www.myapp.com;</span><br><span class="line">        <span class="section">location</span> /  &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span> http://BACK_SERVER ;</span><br><span class="line">          	<span class="comment"># 其它配置...</span></span><br><span class="line">            <span class="attribute">proxy_http_version</span> <span class="number">1</span>.<span class="number">1</span>;// 指明请求后端的协议</span><br><span class="line">            <span class="attribute">proxy_set_header</span> Connection <span class="string">&quot;&quot;</span>; // 清理来自客户端的Connection请求头</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>proxy_set_header Connection &quot;&quot;;</code>指令作用时清理来自客户端的Connection请求头，因为http1.1保持开启的长连接的关键是Connection请求头， 因为如果客户端和nginx之间是短连接（http1.0），我们把Connection请求头也带到后端，那么nginx与后端就不会开启长连接了，所以此处需要清除。</p>
+<h3 id="upstream块的keepalive"><a href="#upstream块的keepalive" class="headerlink" title="upstream块的keepalive"></a>upstream块的keepalive</h3><p>官方解释：设置到upstream服务器的空闲keepalive连接的最大数量， 当这个数量被突破时，最近使用最少的连接将被关闭，keepalive指令不会限制一个nginx worker进程到upstream服务器连接的总数量。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">upstream</span>  BACK_SERVER &#123;</span><br><span class="line">        <span class="attribute">server</span>   <span class="number">10.0.0.1:8080</span>  weight=<span class="number">1</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">        <span class="attribute">server</span>   <span class="number">10.0.0.2:8080</span>  weight=<span class="number">1</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">        <span class="attribute">keepalive</span> <span class="number">300</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>说白了就是nginx往后端服务器发的请求的空闲连接的最大数量，假设keepalive设置为30，此时来了100个请求，nginx新建了100个线程去请求后端，那么请求结束后，nginx会关闭100-30&#x3D;70个线程，此时又再来了100个请求，nginx必须再新建70个线程去请求后端，之前30个线程被复用。所以合理配置keepalive是很有必要的。</p>
+<p><strong>一般把upstream块的keepalive配置和保持和server长连接的配置结合使用。</strong></p>
+<h2 id="持续更新……"><a href="#持续更新……" class="headerlink" title="持续更新……"></a>持续更新……</h2>
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://blog.windshadow.cn/nginx%E8%B0%83%E4%BC%98/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://blog.windshadow.cn/nginx%E8%B0%83%E4%BC%98/";
+            const title         = "「Nginx调优」";
+            const excerpt       = `Nginx调优并发数基于nginx的多进程架构，通过合理配置worker_processes、worker_connections、worker_rlimit_nofile参数可调节nginx的最优并发。
+worker_process...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2021-06-29</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Docker容器数据卷" href="//docker容器数据卷/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" MyBatis源码一 MyBatis执行器与缓存实现" href="//MyBatis执行器与缓存实现/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by 浪客千风.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

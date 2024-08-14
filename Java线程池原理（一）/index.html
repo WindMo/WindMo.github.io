@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/avatar.png">
+  <title>Java线程池原理（一） | 风的影子</title>
+  <meta name="author" content="浪客千风" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="Java线程池原理（一）众所周知Executor框架中的ExecutorService接口的实现就是ThreadPoolExecutor线程池，本文《Java线程池原理》系列从源码角度捋一捋线程池的重点实现。 在此之前先聊聊ThreadPoolExecutor的作者：Doug Lea  Doug Lea是 java.util.concurrent 包（JUC）的作者，不少网友评价Doug Lea是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java线程池原理（一）">
+<meta property="og:url" content="https://blog.windshadow.cn/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="Java线程池原理（一）众所周知Executor框架中的ExecutorService接口的实现就是ThreadPoolExecutor线程池，本文《Java线程池原理》系列从源码角度捋一捋线程池的重点实现。 在此之前先聊聊ThreadPoolExecutor的作者：Doug Lea  Doug Lea是 java.util.concurrent 包（JUC）的作者，不少网友评价Doug Lea是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta property="article:published_time" content="2021-07-10T10:57:11.024Z">
+<meta property="article:modified_time" content="2024-08-12T17:10:04.583Z">
+<meta property="article:author" content="浪客千风">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-star"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/game"><i class="fa fa-gamepad"></i>游戏</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/about"><i class="fa fa-paper-plane"></i>关于千风</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>浪客千风</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">且听风吟 御剑于心</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80/">web基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/TLS%E8%AF%81%E4%B9%A6%E4%B8%8E%E8%87%AA%E7%AD%BEca/"><i class="fa  fa-book"></i> TLS证书与自签ca</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E4%BD%95%E4%B8%BAJava%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/"><i class="fa  fa-book"></i> 何为Java线程中断</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa  fa-book"></i> Java线程池原理（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/"><i class="fa  fa-book"></i> MySql索引详解</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">Java线程池原理（一）</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2021-07-10</li>
+                <li><i class="fa fa-user"></i> 作者 浪客千风</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~6.99K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1723482604583"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+            <hr />
+            <h1 id="Java线程池原理（一）"><a href="#Java线程池原理（一）" class="headerlink" title="Java线程池原理（一）"></a>Java线程池原理（一）</h1><p>众所周知<strong>Executor</strong>框架中的<code>ExecutorService</code>接口的实现就是<code>ThreadPoolExecutor</code>线程池，本文《Java线程池原理》系列从源码角度捋一捋线程池的重点实现。</p>
+<p>在此之前先聊聊<code>ThreadPoolExecutor</code>的作者：<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Doug%20Lea/6319404?fr=aladdin">Doug Lea</a></p>
+<p><img src="/./Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/Doug.jpg" alt="Doug Lea"></p>
+<p>Doug Lea是 java.util.concurrent 包（JUC）的作者，不少网友评价Doug Lea是JDK史上最牛*的程序员，甚至有人感叹：“编程不识Doug Lea，写尽java也枉然”。</p>
+<p><img src="/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/nb.gif"></p>
+<p>接下来盘点<code>ThreadPoolExecutor</code>线程池的基本工作原理和<code>Executors</code>工具类提供的几种常见线程池的效果，简单入个门。</p>
+<h2 id="线程池存在的意义"><a href="#线程池存在的意义" class="headerlink" title="线程池存在的意义"></a>线程池存在的意义</h2><p>我们知道当下常见的jvm使用的线程都是内核级线程（KLT）。显然，线程是稀缺资源，它的创建与销般是一个相对偏重且耗资源的操作，而Java线程依赖于内核线程，创建线程需要进行操作系统状态切换，<strong>为避免资源过度消耗需要设法重用线程执行多个任务</strong>。</p>
+<p>所以线程池就是一个线程缓存，负责对线程进行统一分配、调优与监控。</p>
+<p>一般什么时候使用线程池？</p>
+<ul>
+<li>单个任务处理时间比较短</li>
+<li>需要处理的任务数量很大</li>
+<li>比较耗时的任务不建议使用线程池，因为容易造成任务的堆积</li>
+</ul>
+<h2 id="线程池基本工作原理"><a href="#线程池基本工作原理" class="headerlink" title="线程池基本工作原理"></a>线程池基本工作原理</h2><h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><p>jdk提供的线程池实现为<code>ThreadPoolExecutor</code>类（常用就这个类）</p>
+<p><img src="/./Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/ThreadPoolExecutor.png" alt="ThreadPoolExecutor"></p>
+<p>其中前3个构造方法都依赖最后一个构造方法，其含义如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">ThreadPoolExecutor</span><span class="params">(<span class="type">int</span> corePoolSize, /// 核心线程数</span></span><br><span class="line"><span class="params">                          <span class="type">int</span> maximumPoolSize, /// 最大线程数</span></span><br><span class="line"><span class="params">                          <span class="type">long</span> keepAliveTime, /// 非核心线程空闲后的存活时间的数量值</span></span><br><span class="line"><span class="params">                          TimeUnit unit, /// 非核心线程空闲后的存活时间的单位</span></span><br><span class="line"><span class="params">                          BlockingQueue&lt;Runnable&gt; workQueue, /// 工作队列（阻塞队列）</span></span><br><span class="line"><span class="params">                          ThreadFactory threadFactory, /// 线程工厂，主要负责创建线程</span></span><br><span class="line"><span class="params">                          RejectedExecutionHandler handler)</span> &#123; <span class="comment">/// 拒绝策略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>拓扑如下</p>
+<p><img src="/./Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%BB%84%E6%88%90.svg" alt="Java 线程池 ThreadPoolExecutor "></p>
+<ul>
+<li><p>线程工厂：负责创建线程</p>
+</li>
+<li><p>工作队列：一个保存任务的阻塞队列（阻塞队列：多线程下保证队列的FIFO特性）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ThreadFactory</span> &#123;</span><br><span class="line">    <span class="comment">// 通过Runnable对象创建线程</span></span><br><span class="line">    Thread <span class="title function_">newThread</span><span class="params">(Runnable r)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Worker：线程池实现线程复用以执行任务的核心对象（见下文），自身实现了<code>Runnable</code>接口且内部维护了一个<code>Thread</code>线程对象</p>
+</li>
+<li><p>核心线程：Worker对象内的线程，线程池常驻线程，成为核心线程的线程不会被销毁</p>
+</li>
+<li><p>非核心线程：Worker对象内的线程，成为非核心线程的线程进入空闲后，只会存活一定时间（keepAliveTime），之后便正常结束线程。</p>
+</li>
+<li><p>拒绝策略：任务无法添加时，线程池执行拒绝策略。<code>ThreadPoolExecutor</code>提供四种如图所示的拒绝策略，实现<code>RejectedExecutionHandler</code>接口自身定义拒绝策略。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">RejectedExecutionHandler</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">rejectedExecution</span><span class="params">(Runnable r, ThreadPoolExecutor executor)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="线程池的状态"><a href="#线程池的状态" class="headerlink" title="线程池的状态"></a>线程池的状态</h3><p>类似线程的状态，线程池也有自己的状态</p>
+<ul>
+<li><p>Running：运行状态，接受新任务，也能处理工作队列里的任务</p>
+</li>
+<li><p>Shutdown：关闭状态，不接受新任务，但是处理工作队列里的任务</p>
+</li>
+<li><p>Stop：停止状态，不接受新任务，不处理工作队列里的任务，中断正在处理中的任务</p>
+</li>
+<li><p>Tidying：整理状态，当所有的任务都执行完了，当前线程池已经没有工作线程，这时线程池将会转换为Tidying状态，并且将要调用terminated方法。terminated方法调用完毕之后，线程池进入Terminated状态。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">terminated</span><span class="params">()</span> &#123; &#125; <span class="comment">/// ThreadPoolExecutor terminated方法为空实现，子类可覆盖实现</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Terminated：终止状态，terminated方法调用完毕之后，线程池进入Terminated状态。</p>
+</li>
+</ul>
+<p>其关系如图（对线程池工作原理有所了解后再回头看此状态转换图会更好）。</p>
+<p><img src="/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%8A%B6%E6%80%81.svg"></p>
+<h3 id="线程池添加任务流程"><a href="#线程池添加任务流程" class="headerlink" title="线程池添加任务流程"></a>线程池添加任务流程</h3><p>我相信大多数人都比较清楚线程池添加任务的流程，各种博客网图巴拉巴拉，这里再哔哔一下线程池提交任务的流程，如下：</p>
+<p><img src="/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%89%A7%E8%A1%8C%E4%BB%BB%E5%8A%A1%E6%B5%81%E7%A8%8B.svg" alt="线程池执行任务流程"></p>
+<p>我们通常通过执行<code>ThreadPoolExecutor</code>实现<code>Executor</code>接口的execute方法（<code>Executor#execute(Runnable)</code>）来提交任务，这个流程就是来自该方法的实现！！！</p>
+<p>贴一下源码，官方注释给你讲的明明白白，代码也很清晰。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(Runnable command)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (command == <span class="literal">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>();</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Proceed in 3 steps:</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 1. If fewer than corePoolSize threads are running, try to</span></span><br><span class="line"><span class="comment">         * start a new thread with the given command as its first</span></span><br><span class="line"><span class="comment">         * task.  The call to addWorker atomically checks runState and</span></span><br><span class="line"><span class="comment">         * workerCount, and so prevents false alarms that would add</span></span><br><span class="line"><span class="comment">         * threads when it shouldn&#x27;t, by returning false.</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 2. If a task can be successfully queued, then we still need</span></span><br><span class="line"><span class="comment">         * to double-check whether we should have added a thread</span></span><br><span class="line"><span class="comment">         * (because existing ones died since last checking) or that</span></span><br><span class="line"><span class="comment">         * the pool shut down since entry into this method. So we</span></span><br><span class="line"><span class="comment">         * recheck state and if necessary roll back the enqueuing if</span></span><br><span class="line"><span class="comment">         * stopped, or start a new thread if there are none.</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 3. If we cannot queue task, then we try to add a new</span></span><br><span class="line"><span class="comment">         * thread.  If it fails, we know we are shut down or saturated</span></span><br><span class="line"><span class="comment">         * and so reject the task.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">c</span> <span class="operator">=</span> ctl.get();</span><br><span class="line">        <span class="keyword">if</span> (workerCountOf(c) &lt; corePoolSize) &#123; <span class="comment">/// 1、核心线程是否已经满</span></span><br><span class="line">            <span class="keyword">if</span> (addWorker(command, <span class="literal">true</span>))<span class="comment">/// 2、添加worker，以核心线程消费任务(第二个参数为true)</span></span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            c = ctl.get();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isRunning(c) &amp;&amp; workQueue.offer(command)) &#123;<span class="comment">/// 3、添加到工作队列是否可行</span></span><br><span class="line">            <span class="type">int</span> <span class="variable">recheck</span> <span class="operator">=</span> ctl.get();</span><br><span class="line">            <span class="keyword">if</span> (! isRunning(recheck) &amp;&amp; remove(command))</span><br><span class="line">                reject(command);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (workerCountOf(recheck) == <span class="number">0</span>)</span><br><span class="line">                addWorker(<span class="literal">null</span>, <span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (!addWorker(command, <span class="literal">false</span>))<span class="comment">/// 4、添加worker，以非核心线程消费任务(第二个参数为false)</span></span><br><span class="line">            reject(command);<span class="comment">/// 5、如果添加失败，说明非核心线程是否已经满，执行拒绝策略</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Executors工具类提供的常见线程池"><a href="#Executors工具类提供的常见线程池" class="headerlink" title="Executors工具类提供的常见线程池"></a>Executors工具类提供的常见线程池</h2><h3 id="可缓存线程池Executors-newCachedThreadPool"><a href="#可缓存线程池Executors-newCachedThreadPool" class="headerlink" title="可缓存线程池Executors.newCachedThreadPool()"></a>可缓存线程池Executors.newCachedThreadPool()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title function_">newCachedThreadPool</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">0</span>, Integer.MAX_VALUE,</span><br><span class="line">                                      <span class="number">60L</span>, TimeUnit.SECONDS,</span><br><span class="line">                                      <span class="keyword">new</span> <span class="title class_">SynchronousQueue</span>&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分析：核心线程数为0，最大线程数为<code>Integer.MAX_VALUE</code>，工作队列为<strong>同步移交队列</strong>；</p>
+<p>新增任务：核心线程数为0 &#x3D;&gt; 任务提交到工作队列 &#x3D;&gt; 工作队列提交时阻塞直到有线程从队列获取任务。</p>
+<p>很显然，每个任务都会交由非核心线程来完成。而非核心线程在任务全部执行完毕后只会存在一定时间（60s），所以这是具有缓存效果的线程池（Cached）。</p>
+<h3 id="固定线程数量线程池Executors-newFixedThreadPool"><a href="#固定线程数量线程池Executors-newFixedThreadPool" class="headerlink" title="固定线程数量线程池Executors.newFixedThreadPool()"></a>固定线程数量线程池Executors.newFixedThreadPool()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title function_">newFixedThreadPool</span><span class="params">(<span class="type">int</span> nThreads)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(nThreads, nThreads,</span><br><span class="line">                                      <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                      <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;Runnable&gt;());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>分析：核心线程数为固定值，最大线程数与核心线程数相同，工作队列为<strong>无界队列</strong>；</p>
+<p>无界队列：队列可存储的元素没有上限，概念上是如此，但实际受数据类型值范围限制，所以无界队列在Java中指可存放元素的最大值为<code>Integer.MAX_VALUE</code>的队列。</p>
+<p><code>LinkedBlockingQueue</code>无参构造方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">LinkedBlockingQueue</span><span class="params">()</span> &#123;</span><br><span class="line">       <span class="built_in">this</span>(Integer.MAX_VALUE);<span class="comment">// 队列元素最大数量为Integer.MAX_VALUE</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>新增任务：当核心线程数已满时，任务都存到工作队列，由于工作队列是无界的，所以队列永远不会满（概念上不会满），所以非核心线程没有存在的必要，即maximumPoolSize - corePoolSize &#x3D; 0。</p>
+<p>很显然，在固定线程数量线程池中，提交的每个任务都会交由核心线程来完成，核心线程数量固定，非核心线程数量为0，线程池常驻线程数量固定，所以称之为拥有固定线程数量的线程池（Fixed）。</p>
+<h3 id="单线程线程池Executors-newSingleThreadExecutor"><a href="#单线程线程池Executors-newSingleThreadExecutor" class="headerlink" title="单线程线程池Executors.newSingleThreadExecutor()"></a>单线程线程池Executors.newSingleThreadExecutor()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title function_">newSingleThreadExecutor</span><span class="params">()</span> &#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">FinalizableDelegatedExecutorService</span></span><br><span class="line">           (<span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">1</span>, <span class="number">1</span>,</span><br><span class="line">                                   <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                   <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;Runnable&gt;()));</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>FinalizableDelegatedExecutorService</code>，仅重写了finalize方法，调用父类<code>DelegatedExecutorService</code>线程池shutdown方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">FinalizableDelegatedExecutorService</span> <span class="keyword">extends</span> <span class="title class_">DelegatedExecutorService</span> &#123;</span><br><span class="line">      FinalizableDelegatedExecutorService(ExecutorService executor) &#123;</span><br><span class="line">          <span class="built_in">super</span>(executor);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">finalize</span><span class="params">()</span> &#123;</span><br><span class="line">          <span class="built_in">super</span>.shutdown();</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>DelegatedExecutorService</code>，该类实现的线程池内部维护了一个实际真正工作的线程池对象，实质是对线程池<code>ExecutorService</code>的一个静态代理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">DelegatedExecutorService</span> <span class="keyword">extends</span> <span class="title class_">AbstractExecutorService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ExecutorService e;<span class="comment">/// 我才是干活的线程池</span></span><br><span class="line">    DelegatedExecutorService(ExecutorService executor) &#123; e = executor; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(Runnable command)</span> &#123; e.execute(command); &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>分析：阅读源码后，不难发现该种线程池最终工作的线程池还是<code>ThreadPoolExecutor</code>的实例，而<code>ThreadPoolExecutor</code>实例的核心线程数为1，最大线程数也为1，工作队列为<strong>无界队列</strong>；</p>
+<p>单线程线程池无非就是数量为1的固定数量线程池（Fixed，corePoolSize &#x3D; maximumPoolSize &#x3D; 1），与Fixed线程池不同的是，Single线程池对象在被GC回收时可自动关闭，比较安全，而Fixed线程池的关闭依赖于第三方调用者。</p>
+<p>Single线程池更像一个“孤儿”，干活都是同一个Worker，自生自灭。</p>
+<h2 id="定时任务线程池"><a href="#定时任务线程池" class="headerlink" title="定时任务线程池"></a>定时任务线程池</h2><p>TODO</p>
+<hr>
+<p>PS：在下博客里的图绝大部分都是自己通过<a target="_blank" rel="noopener" href="https://processon.com/">ProcessOn</a>做的，均带有**@WindShadow**水印，这么认真的开发人员哪里找哦</p>
+<p><code>（ ’ - ’ * )</code> </p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://blog.windshadow.cn/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://blog.windshadow.cn/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/";
+            const title         = "「Java线程池原理（一）」";
+            const excerpt       = `Java线程池原理（一）众所周知Executor框架中的ExecutorService接口的实现就是ThreadPoolExecutor线程池，本文《Java线程池原理》系列从源码角度捋一捋线程池的重点实现。
+在此之前先聊聊Threa...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2024-08-13</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 线程基础与Executor" href="//线程基础与Executor/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" MySql事务" href="//MySql事务/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by 浪客千风.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

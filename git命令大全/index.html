@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/avatar.png">
+  <title>Git命令大全 | 风的影子</title>
+  <meta name="author" content="浪客千风" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="Git命令大全git config配置 Git 的相关参数。 Git 一共有3个配置文件：  仓库级的配置文件：在仓库的 .git&#x2F;.gitconfig，该配置文件只对所在的仓库有效。 全局配置文件：Mac 系统在 ~&#x2F;.gitconfig，Windows 系统在 C:\Users\&lt;用户名&gt;\.gitconfig。 系统级的配置文件：在 Git 的安装目录下（Mac 系统下安装目录在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git命令大全">
+<meta property="og:url" content="https://blog.windshadow.cn/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="Git命令大全git config配置 Git 的相关参数。 Git 一共有3个配置文件：  仓库级的配置文件：在仓库的 .git&#x2F;.gitconfig，该配置文件只对所在的仓库有效。 全局配置文件：Mac 系统在 ~&#x2F;.gitconfig，Windows 系统在 C:\Users\&lt;用户名&gt;\.gitconfig。 系统级的配置文件：在 Git 的安装目录下（Mac 系统下安装目录在">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta property="article:published_time" content="2021-02-15T13:03:17.403Z">
+<meta property="article:modified_time" content="2020-12-04T00:55:12.000Z">
+<meta property="article:author" content="浪客千风">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-star"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/game"><i class="fa fa-gamepad"></i>游戏</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/about"><i class="fa fa-paper-plane"></i>关于千风</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>浪客千风</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">且听风吟 御剑于心</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80/">web基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/TLS%E8%AF%81%E4%B9%A6%E4%B8%8E%E8%87%AA%E7%AD%BEca/"><i class="fa  fa-book"></i> TLS证书与自签ca</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E4%BD%95%E4%B8%BAJava%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/"><i class="fa  fa-book"></i> 何为Java线程中断</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa  fa-book"></i> Java线程池原理（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/"><i class="fa  fa-book"></i> MySql索引详解</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">Git命令大全</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2021-02-15</li>
+                <li><i class="fa fa-user"></i> 作者 浪客千风</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~7.87K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1607043312000"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+            <hr />
+            <h1 id="Git命令大全"><a href="#Git命令大全" class="headerlink" title="Git命令大全"></a>Git命令大全</h1><h2 id="git-config"><a href="#git-config" class="headerlink" title="git config"></a>git config</h2><p>配置 Git 的相关参数。</p>
+<p>Git 一共有3个配置文件：</p>
+<ol>
+<li>仓库级的配置文件：在仓库的 <code>.git/.gitconfig</code>，该配置文件只对所在的仓库有效。</li>
+<li>全局配置文件：Mac 系统在 <code>~/.gitconfig</code>，Windows 系统在 <code>C:\Users\&lt;用户名&gt;\.gitconfig</code>。</li>
+<li>系统级的配置文件：在 Git 的安装目录下（Mac 系统下安装目录在 <code>/usr/local/git</code>）的 <code>etc</code> 文件夹中的 <code>gitconfig</code>。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看配置信息</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--<span class="built_in">local</span>：仓库级，--global：全局级，--system：系统级</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config &lt;--<span class="built_in">local</span> | --global | --system&gt; -l</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看当前生效的配置信息</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config -l</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编辑配置文件</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--<span class="built_in">local</span>：仓库级，--global：全局级，--system：系统级</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config &lt;--<span class="built_in">local</span> | --global | --system&gt; -e</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加配置项</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--<span class="built_in">local</span>：仓库级，--global：全局级，--system：系统级</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config &lt;--<span class="built_in">local</span> | --global | --system&gt; --add &lt;name&gt; &lt;value&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取配置项</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config &lt;--<span class="built_in">local</span> | --global | --system&gt; --get &lt;name&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除配置项</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config &lt;--<span class="built_in">local</span> | --global | --system&gt; --<span class="built_in">unset</span> &lt;name&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置提交记录中的用户信息</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config --global user.name &lt;用户名&gt;</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config --global user.email &lt;邮箱地址&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">更改Git缓存区的大小</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果提交的内容较大，默认缓存较小，提交会失败</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">缓存大小单位：B，例如：524288000（500MB）</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config --global http.postBuffer &lt;缓存大小&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">调用 git status/git diff 命令时以高亮或彩色方式显示改动状态</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config --global color.ui <span class="literal">true</span></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置可以缓存密码，默认缓存时间15分钟</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config --global credential.helper cache</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置密码的缓存时间</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">缓存时间单位：秒</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config --global credential.helper <span class="string">&#x27;cache --timeout=&lt;缓存时间&gt;&#x27;</span></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置长期存储密码</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git config --global credential.helper store</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h2><p>从远程仓库克隆一个版本库到本地。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认在当前目录下创建和版本库名相同的文件夹并下载版本到该文件夹下</span></span><br><span class="line">$ git <span class="built_in">clone</span> &lt;远程仓库的网址&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定本地仓库的目录</span></span><br><span class="line">$ git <span class="built_in">clone</span> &lt;远程仓库的网址&gt; &lt;本地目录&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># -b 指定要克隆的分支，默认是master分支</span></span><br><span class="line">$ git <span class="built_in">clone</span> &lt;远程仓库的网址&gt; -b &lt;分支名称&gt; &lt;本地目录&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h2><p>初始化项目所在目录，初始化后会在当前目录下出现一个名为 .git 的目录。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化本地仓库，在当前目录下生成 .git 文件夹</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git init</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-status"><a href="#git-status" class="headerlink" title="git status"></a>git status</h2><p>查看本地仓库的状态。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看本地仓库的状态</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git status</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">以简短模式查看本地仓库的状态</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">会显示两列，第一列是文件的状态，第二列是对应的文件</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">文件状态：A 新增，M 修改，D 删除，?? 未添加到Git中</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git status -s</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-remote"><a href="#git-remote" class="headerlink" title="git remote"></a>git remote</h2><p>操作远程库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">列出已经存在的远程仓库</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">列出远程仓库的详细信息，在别名后面列出URL地址</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote -v</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote --verbose</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加远程仓库</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote add &lt;远程仓库的别名&gt; &lt;远程仓库的URL地址&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改远程仓库的别名</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote rename &lt;原远程仓库的别名&gt; &lt;新的别名&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除指定名称的远程仓库</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote remove &lt;远程仓库的别名&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改远程仓库的 URL 地址</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote set-url &lt;远程仓库的别名&gt; &lt;新的远程仓库URL地址&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-branch"><a href="#git-branch" class="headerlink" title="git branch"></a>git branch</h2><p>操作 Git 的分支命令。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">列出本地的所有分支，当前所在分支以 <span class="string">&quot;*&quot;</span> 标出</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">列出本地的所有分支并显示最后一次提交，当前所在分支以 <span class="string">&quot;*&quot;</span> 标出</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -v</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建新分支，新的分支基于上一次提交建立</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch &lt;分支名&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改分支名称</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果不指定原分支名称则为当前所在分支</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -m [&lt;原分支名称&gt;] &lt;新的分支名称&gt;</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">强制修改分支名称</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -M [&lt;原分支名称&gt;] &lt;新的分支名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除指定的本地分支</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -d &lt;分支名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">强制删除指定的本地分支</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -D &lt;分支名称&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h2><p>检出命令，用于创建、切换分支等。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">切换到已存在的指定分支</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git checkout &lt;分支名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建并切换到指定的分支，保留所有的提交记录</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">等同于 <span class="string">&quot;git branch&quot;</span> 和 <span class="string">&quot;git checkout&quot;</span> 两个命令合并</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git checkout -b &lt;分支名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建并切换到指定的分支，删除所有的提交记录</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git checkout --orphan &lt;分支名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">替换掉本地的改动，新增的文件和已经添加到暂存区的内容不受影响</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git checkout &lt;文件路径&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-cherry-pick"><a href="#git-cherry-pick" class="headerlink" title="git cherry-pick"></a>git cherry-pick</h2><p>把已经提交的记录合并到当前分支。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">把已经提交的记录合并到当前分支</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git cherry-pick &lt;commit ID&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a>git add</h2><p>把要提交的文件的信息添加到暂存区中。当使用 git commit 时，将依据暂存区中的内容来进行文件的提交。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">把指定的文件添加到暂存区中</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git add &lt;文件路径&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加所有修改、已删除的文件到暂存区中</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git add -u [&lt;文件路径&gt;]</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git add --update [&lt;文件路径&gt;]</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加所有修改、已删除、新增的文件到暂存区中，省略 &lt;文件路径&gt; 即为当前目录</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git add -A [&lt;文件路径&gt;]</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git add --all [&lt;文件路径&gt;]</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看所有修改、已删除但没有提交的文件，进入一个子命令系统</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git add -i [&lt;文件路径&gt;]</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git add --interactive [&lt;文件路径&gt;]</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-commit"><a href="#git-commit" class="headerlink" title="git commit"></a>git commit</h2><p>将暂存区中的文件提交到本地仓库中。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">把暂存区中的文件提交到本地仓库，调用文本编辑器输入该次提交的描述信息</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git commit</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">把暂存区中的文件提交到本地仓库中并添加描述信息</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git commit -m <span class="string">&quot;&lt;提交的描述信息&gt;&quot;</span></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">把所有修改、已删除的文件提交到本地仓库中</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不包括未被版本库跟踪的文件，等同于先调用了 <span class="string">&quot;git add -u&quot;</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git commit -a -m <span class="string">&quot;&lt;提交的描述信息&gt;&quot;</span></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改上次提交的描述信息</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git commit --amend</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-fetch"><a href="#git-fetch" class="headerlink" title="git fetch"></a>git fetch</h2><p>从远程仓库获取最新的版本到本地的 tmp 分支上。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将远程仓库所有分支的最新版本全部取回到本地</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git fetch &lt;远程仓库的别名&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将远程仓库指定分支的最新版本取回到本地</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git fetch &lt;远程主机名&gt; &lt;分支名&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-merge"><a href="#git-merge" class="headerlink" title="git merge"></a>git merge</h2><p>合并分支。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">把指定的分支合并到当前所在的分支下</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git merge &lt;分支名称&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-diff"><a href="#git-diff" class="headerlink" title="git diff"></a>git diff</h2><p>比较版本之间的差异。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">比较当前文件和暂存区中文件的差异，显示没有暂存起来的更改</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">比较暂存区中的文件和上次提交时的差异</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff --cached</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff --staged</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">比较当前文件和上次提交时的差异</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff HEAD</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看从指定的版本之后改动的内容</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff &lt;commit ID&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">比较两个分支之间的差异</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff &lt;分支名称&gt; &lt;分支名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看两个分支分开后各自的改动内容</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff &lt;分支名称&gt;...&lt;分支名称&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-pull"><a href="#git-pull" class="headerlink" title="git pull"></a>git pull</h2><p>从远程仓库获取最新版本并合并到本地。</p>
+<p>首先会执行 <code>git fetch</code>，然后执行 <code>git merge</code>，把获取的分支的 HEAD 合并到当前分支。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从远程仓库获取最新版本。</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git pull</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-push"><a href="#git-push" class="headerlink" title="git push"></a>git push</h2><p>把本地仓库的提交推送到远程仓库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">把本地仓库的分支推送到远程仓库的指定分支</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push &lt;远程仓库的别名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除指定的远程仓库的分支</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push &lt;远程仓库的别名&gt; :&lt;远程分支名&gt;</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push &lt;远程仓库的别名&gt; --delete &lt;远程分支名&gt;</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">强制push，慎用！！！</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push -f &lt;远程仓库的别名&gt; :&lt;远程分支名&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-log"><a href="#git-log" class="headerlink" title="git log"></a>git log</h2><p>显示提交的记录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 打印所有的提交记录</span></span><br><span class="line">$ git <span class="built_in">log</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印从第一次提交到指定的提交的记录</span></span><br><span class="line">$ git <span class="built_in">log</span> &lt;commit ID&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印指定数量的最新提交的记录</span></span><br><span class="line">$ git <span class="built_in">log</span> -&lt;指定的数量&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a>git rebase</h2><ul>
+<li><strong>对远程分支的rebase是指，将自己的提交追加在别人的提交之后，如果自己的提交和远程的提交有相同的文件的改动，远程提交有可能被刷掉</strong></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打开一个编辑器，显示最后3次提交的日志，从上往下越来越新，与git <span class="built_in">log</span>显示顺序相反</span></span><br><span class="line">git rebase -i HEAD 3</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">完成编辑后执行</span></span><br><span class="line">git rebase -continue</span><br></pre></td></tr></table></figure>
+
+<p>rebase的目的是打开提交的历史，git会让你在一个新的分支修改内容，git rebase -continue则是让你回到之前的版本</p>
+<ul>
+<li>对本地分支的rebase 是指将自己本地分支的所有提交合并成为一个，可解决多次小改动的重复提交等</li>
+</ul>
+<h2 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h2><p>还原提交记录。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重置暂存区，但文件不受影响</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">相当于将用 <span class="string">&quot;git add&quot;</span> 命令更新到暂存区的内容撤出暂存区，可以指定文件</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">没有指定 commit ID 则默认为当前 HEAD</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git reset [&lt;文件路径&gt;]</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git reset --mixed [&lt;文件路径&gt;]</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git reset &lt;commit ID&gt;</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git reset --mixed &lt;commit ID&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">相当于调用 <span class="string">&quot;git reset --mixed&quot;</span> 命令后又做了一次 <span class="string">&quot;git add&quot;</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git reset --soft &lt;commit ID&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将 HEAD 的指向改变，撤销到指定的提交记录，文件也修改了</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git reset --hard &lt;commit ID&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-revert"><a href="#git-revert" class="headerlink" title="git revert"></a>git revert</h2><p>生成一个新的提交来撤销某次提交，此次提交之前的所有提交都会被保留。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">生成一个新的提交来撤销某次提交</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git revert &lt;commit ID&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-stash"><a href="#git-stash" class="headerlink" title="git stash"></a>git stash</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行存储时，添加备注，方便查找，只有git stash 也要可以的，但查找时不方便识别。</span></span><br><span class="line">git stash &lt;save &quot;save message&quot;&gt;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看stash了哪些存储</span></span><br><span class="line">git stash list</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">显示做了哪些改动，默认show第一个存储,如果要显示其他存贮，后面加stash@&#123;<span class="variable">$num</span>&#125;，比如第二个 git stash show stash@&#123;1&#125;</span></span><br><span class="line">git stash show</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">显示第一个存储的改动，如果想显示其他存存储，命令：git stash show  stash@&#123;<span class="variable">$num</span>&#125;  -p ，比如第二个：git stash show  stash@&#123;1&#125;  -p</span></span><br><span class="line">git stash show -p</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即stash@&#123;0&#125;，如果要使用其他个，git stash apply stash@&#123;<span class="variable">$num</span>&#125; ， 比如第二个：git stash apply stash@&#123;1&#125;</span> </span><br><span class="line">git stash apply</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">命令恢复之前缓存的工作目录，将缓存堆栈中的对应stash删除，并将对应修改应用到当前的工作目录下,默认为第一个stash,即stash@&#123;0&#125;，如果要应用并删除其他stash，命令：git stash pop stash@&#123;<span class="variable">$num</span>&#125; ，比如应用并删除第二个：git stash pop stash@&#123;1&#125;</span></span><br><span class="line">git stash pop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">丢弃stash@&#123;<span class="variable">$num</span>&#125;存储，从列表中删除这个存储</span></span><br><span class="line">git stash drop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除所有缓存的stash</span></span><br><span class="line">git stash clear</span><br></pre></td></tr></table></figure>
+
+<h2 id="git-tag"><a href="#git-tag" class="headerlink" title="git tag"></a>git tag</h2><p>操作标签的命令。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打印所有的标签</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git tag</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加轻量标签，指向提交对象的引用，可以指定之前的提交记录</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git tag &lt;标签名称&gt; [&lt;commit ID&gt;]</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加带有描述信息的附注标签，可以指定之前的提交记录</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git tag -a &lt;标签名称&gt; -m &lt;标签描述信息&gt; [&lt;commit ID&gt;]</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">切换到指定的标签</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git checkout &lt;标签名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看标签的信息</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git show &lt;标签名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除指定的标签</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git tag -d &lt;标签名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将指定的标签提交到远程仓库</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push &lt;远程仓库的别名&gt; &lt;标签名称&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将本地所有的标签全部提交到远程仓库</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push &lt;远程仓库的别名&gt; –tags</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-mv"><a href="#git-mv" class="headerlink" title="git mv"></a>git mv</h2><p>重命名文件或者文件夹。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重命名指定的文件或者文件夹</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">mv</span> &lt;源文件/文件夹&gt; &lt;目标文件/文件夹&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="git-rm"><a href="#git-rm" class="headerlink" title="git rm"></a>git rm</h2><p>删除文件或者文件夹。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">移除跟踪指定的文件，并从本地仓库的文件夹中删除</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">rm</span> &lt;文件路径&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">移除跟踪指定的文件夹，并从本地仓库的文件夹中删除</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">rm</span> -r &lt;文件夹路径&gt;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">移除跟踪指定的文件，在本地仓库的文件夹中保留该文件</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">rm</span> --cached</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Git操作场景示例"><a href="#Git操作场景示例" class="headerlink" title="Git操作场景示例"></a>Git操作场景示例</h2><h3 id="1-删除掉本地不存在的远程分支"><a href="#1-删除掉本地不存在的远程分支" class="headerlink" title="1. 删除掉本地不存在的远程分支"></a>1. 删除掉本地不存在的远程分支</h3><p>多人合作开发时，如果远程的分支被其他开发删除掉，在本地执行 <code>git branch --all</code> 依然会显示该远程分支，可使用下列的命令进行删除：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用 pull 命令，添加 -p 参数</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git pull -p</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">等同于下面的命令</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git fetch -p</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git fetch --prune origin</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-git-stash解决冲突"><a href="#2-git-stash解决冲突" class="headerlink" title="2.git stash解决冲突"></a>2.git stash解决冲突</h3><p>使用IDEA的Stash Changes 和 unStash Changes 来解决冲突。</p>
+<ul>
+<li>Stash Changes ：<br>作用：本地的全部改动临时保存到本地仓库，并撤销了本地的所有改动<br>stash的好处是，可以先将你的改动暂存到本地仓库中，随时可以取出来再用，但是不用担心下次push到服务器时，把不想提交的改动也push到服务器上，因为Stash Changes的内容不参与commit和push。</li>
+<li>unStash Changes<br>作用：将之前保存得临时改动，取出并合并带本地。</li>
+</ul>
+<p>步骤：</p>
+<ol>
+<li><p>我们选择项目右键–Git–Repository–Stash Changes</p>
+<p>stash完后你会发现你本地进行的一些修改都已经不存在了，这样我们就可以和远程仓库合并了，冲突先去掉了，git pull 顺利成功。</p>
+</li>
+<li><p>我们选择项目右键–Git–Repository–pull将线上得代码拉取到本地</p>
+</li>
+<li><p>现在我们再把之前保存的更改取出来 选择项目右键–Git–Repository–UnStash Changes，手动解决冲突</p>
+</li>
+</ol>
+<p>此操作比较实用。</p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://blog.windshadow.cn/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://blog.windshadow.cn/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/";
+            const title         = "「Git命令大全」";
+            const excerpt       = `Git命令大全git config配置 Git 的相关参数。
+Git 一共有3个配置文件：
+
+仓库级的配置文件：在仓库的 .git/.gitconfig，该配置文件只对所在的仓库有效。
+全局配置文件：Mac 系统在 ~/.gitcon...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2020-12-04</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Feign声明式服务调用入门" href="//Feign入门/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Location通用匹配的注意点" href="//NginxLocation/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by 浪客千风.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
