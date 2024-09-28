@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/avatar.png">
+  <title>ws-springx | 风的影子</title>
+  <meta name="author" content="浪客千风" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="ws-springx旨在将笔者在springboot开发中遇到的问题及解决方式，以通用组件等形式沉淀下来。 Github: https:&#x2F;&#x2F;github.com&#x2F;WindMo&#x2F;ws-springx AOPMethodPeeper方法观测器在编写业务aop组件时，我们通常以@Aspect + 切点表达式的方式去开发。实际开发中会存在以下问题：  被增强的类或方法往往在少数，但需要特别单独的写一套基于">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ws-springx">
+<meta property="og:url" content="https://blog.windshadow.cn/ws-springx/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="ws-springx旨在将笔者在springboot开发中遇到的问题及解决方式，以通用组件等形式沉淀下来。 Github: https:&#x2F;&#x2F;github.com&#x2F;WindMo&#x2F;ws-springx AOPMethodPeeper方法观测器在编写业务aop组件时，我们通常以@Aspect + 切点表达式的方式去开发。实际开发中会存在以下问题：  被增强的类或方法往往在少数，但需要特别单独的写一套基于">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta property="article:published_time" content="2024-09-28T17:34:04.210Z">
+<meta property="article:modified_time" content="2024-09-28T17:34:04.210Z">
+<meta property="article:author" content="浪客千风">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/ws-springx"><i class="fa fa-code" aria-hidden="true" /></i>ws-springx</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-star"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/game"><i class="fa fa-gamepad"></i>游戏</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/about"><i class="fa fa-paper-plane"></i>关于千风</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>浪客千风</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">且听风吟 御剑于心</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80/">web基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/TLS%E8%AF%81%E4%B9%A6%E4%B8%8E%E8%87%AA%E7%AD%BEca/"><i class="fa  fa-book"></i> TLS证书与自签ca</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E4%BD%95%E4%B8%BAJava%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/"><i class="fa  fa-book"></i> 何为Java线程中断</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa  fa-book"></i> Java线程池原理（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/MySql%E7%B4%A2%E5%BC%95%E8%AF%A6%E8%A7%A3/"><i class="fa  fa-book"></i> MySql索引详解</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <div class="kratos-post-content">
+            <h2 class="title-h2 text-center">ws-springx</h2>
+            <p>ws-springx旨在将笔者在springboot开发中遇到的问题及解决方式，以通用组件等形式沉淀下来。</p>
+<p>Github: <a target="_blank" rel="noopener" href="https://github.com/WindMo/ws-springx">https://github.com/WindMo/ws-springx</a></p>
+<h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><h3 id="MethodPeeper方法观测器"><a href="#MethodPeeper方法观测器" class="headerlink" title="MethodPeeper方法观测器"></a>MethodPeeper方法观测器</h3><p>在编写业务aop组件时，我们通常以@Aspect + 切点表达式的方式去开发。实际开发中会存在以下问题：</p>
+<ul>
+<li>被增强的类或方法往往在少数，但需要特别单独的写一套基于Aspect的切面组件</li>
+<li>需要开发者足够细心，如果切点表达式没写好，可能在这个版本能用，在后续版本中新增了其它类也满足了切点，就会出现意外的增强导致bug</li>
+<li>开发者编写通知（增强）逻辑时，容易忽略异常或者不正确的处理异常，导致“吞异常”的情况出现。现象如目标方法正常执行返回，但是上层调用却得不到正确的结果。或者目标方法执行时抛出了异常，但是切面吞掉了异常，返回了一个自以为的结果，上层仍接收到了返回，但是这和方法预期是不符的，即目标方法没有满足原先的预期约束和返回。</li>
+<li>增强的逻辑对目标方法的执行过程来说，往往更像是一种观察、窥探，而不是修改其原先的入参、执行逻辑和结果</li>
+</ul>
+<p>使用MethodPeeper能更简便的编写aop组件逻辑，而不用担心上面的问题，</p>
+<p>例：</p>
+<p><strong>使用@EnableMethodPeek开启MethodPeeper支持</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableMethodPeek</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringxApp</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(SpringxApp.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在bean的public方法上使用@ExposurePoint注解来暴露被观察方法，我们称之为暴露点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NormalService</span> &#123;</span><br><span class="line">    <span class="meta">@ExposurePoint(&quot;consumerString&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">consumerString</span><span class="params">(String str)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;consumerString, str : &#123;&#125;&quot;</span>, str);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;consumerString: &quot;</span> + str;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用@Peeper注解声明观察者并指明观察的bean的class，使用@PeekPoint注解标记观测点，并通过返回ReturnValuePeeper对象来观测目标方法的返回值或异常。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Peeper(value = NormalService.class)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NormalServiceAdvice</span> &#123;</span><br><span class="line">    <span class="meta">@PeekPoint(&quot;consumerString&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> ReturnValuePeeper&lt;String&gt; <span class="title function_">consumerString</span><span class="params">(String str)</span> &#123;</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;method consumerString str: &#123;&#125; - Args Advice&quot;</span>, str);</span><br><span class="line">        <span class="keyword">return</span> (v, ex) -&gt; log.info(<span class="string">&quot;return-consumerString: &#123;&#125;, ex: &#123;&#125;&quot;</span>, v, ex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ReturnValuePeeper</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 返回值观测者，实现此接口用于观测&#123;<span class="doctag">@linkplain</span> ws.spring.aop.annotation.ExposurePoint 暴露点&#125;方法的返回值</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> WindShadow</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> ws.spring.aop.annotation.ExposurePoint</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> MethodPeeper</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ReturnValuePeeper</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 观测暴露点方法的返回值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> returnValue 目标方法执行成功的返回值（void 的返回值为null）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ex          目标方法执行期间抛出的异常，无异常时其值为 null</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">peekReturnValue</span><span class="params">(<span class="meta">@Nullable</span> T returnValue, <span class="meta">@Nullable</span> Exception ex)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>若调用NormalService.consumerString，参数为”abc”，其日志输出将如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">method consumerString str: abc - Args Advice</span><br><span class="line">consumerString, str : abc</span><br><span class="line">return-consumerString: consumerString: abc, ex: null</span><br></pre></td></tr></table></figure>
+
+<p>此外，你可以使用以下方式编写观测点方法。结合Order注解可以编排观测点方法的执行顺序。指定asyn 属性<code>@PeekPoint(asyn = true)</code>来表明对于返回值的观测是异步的，这样不会使暴露点方法执行的太久。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Peeper(value = NormalService.class)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NormalServiceAdvice</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// case1: 声明参数，声明ReturnValuePeeper返回值，既观测参数=且异步观察执行结果</span></span><br><span class="line">    <span class="meta">@PeekPoint(value = &quot;consumerString&quot;, asyn = true)</span></span><br><span class="line">    <span class="keyword">public</span> ReturnValuePeeper&lt;String&gt; <span class="title function_">consumerStringAync</span><span class="params">(String str)</span> &#123;</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;method consumerString str: &#123;&#125; - Args Advice&quot;</span>, str);</span><br><span class="line">        <span class="keyword">return</span> (v, ex) -&gt; log.info(<span class="string">&quot;return-consumerString: &#123;&#125;, ex: &#123;&#125;&quot;</span>, v, ex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// case2: 不声明参数，声明ReturnValuePeeper返回值，既只观察执行结果</span></span><br><span class="line">    <span class="meta">@PeekPoint(&quot;consumerString&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> ReturnValuePeeper&lt;String&gt; <span class="title function_">consumerString</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;method consumerString - Args Advice&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> (v, ex) -&gt; log.info(<span class="string">&quot;return-consumerString: &#123;&#125;, ex: &#123;&#125;&quot;</span>, v, ex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// case3: 声明参数，不声明ReturnValuePeeper返回值，既只观察参数</span></span><br><span class="line">    <span class="meta">@PeekPoint(&quot;consumerString&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">consumerStringVoid</span><span class="params">(String str)</span> &#123;</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;method consumerStringVoid str: &#123;&#125; - Args Advice&quot;</span>, str);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// case4: 不声明参数，不声明ReturnValuePeeper返回值，既不观测参数也不观察执行结果</span></span><br><span class="line">    <span class="meta">@Order(1)</span></span><br><span class="line">    <span class="meta">@PeekPoint(&quot;consumerString&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">consumerStringVoid</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;method consumerStringVoid - Advice&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一种常见的声明方式，PeekPoint观测点方法与ExposurePoint暴露点方法的方法名、参数类型和参数顺序一致时，无需额外声明它们的名称，这将由默认的取名逻辑确定。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">SomeService</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@ExposurePoint</span></span><br><span class="line">    String <span class="title function_">proccess</span><span class="params">(String arg)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Peeper(value = SomeService.class)</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SomeServiceAdvice</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@PeekPoint</span></span><br><span class="line">    <span class="keyword">public</span> ReturnValuePeeper&lt;String&gt; <span class="title function_">proccess</span><span class="params">(String arg)</span> &#123;</span><br><span class="line">        <span class="comment">// do peek</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="EnumValue"><a href="#EnumValue" class="headerlink" title="EnumValue"></a>EnumValue</h2><p>设计一个枚举类时，我会遇到枚举内部属性与枚举值本身存在一一对应的情况，如</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="title class_">OperateSys</span> &#123;</span><br><span class="line">    Windows(<span class="string">&quot;code_100&quot;</span>),</span><br><span class="line">    Linux(<span class="string">&quot;code_200&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String code;</span><br><span class="line"></span><br><span class="line">    OperateSys(String code) &#123;</span><br><span class="line">        <span class="built_in">this</span>.code = code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getCode</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, OperateSys&gt; MAPPING = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (OperateSys os : OperateSys.values()) &#123;</span><br><span class="line">            MAPPING.put(os.getCode(), os);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> OperateSys <span class="title function_">resolve</span><span class="params">(String code)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> MAPPING.get(code);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了更方便通过code获取OperateSys枚举，通常需要对外提供一个resolve方法。这样通过枚举方法getCode与静态方法resolve，我们可以在code与OperateSys之间进行来回转换。</p>
+<p>随着枚举越来越多，这种固定式写法也会不停地复制粘贴。</p>
+<p>使用EnumValue接口与EnumValues工具类可以解决这个问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 枚举类型实现此接口提供一个value值反映枚举本身，</span></span><br><span class="line"><span class="comment"> * 你可以通过&#123;<span class="doctag">@linkplain</span> EnumValues&#125;来操作实现了该接口的枚举</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> WindShadow</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> EnumValues</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">EnumValue</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取枚举的对应的其它类型的值，该值不能为null，多次调用必须返回同一个值，即满足&#123;<span class="doctag">@linkplain</span> Object#hashCode() hashCode&#125;和&#123;<span class="doctag">@linkplain</span> Object#equals(Object) equals比较&#125;的结果相同</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the value, not null</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    T <span class="title function_">getValue</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>OperateSys枚举改造如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="title class_">OperateSys</span> <span class="keyword">implements</span> <span class="title class_">EnumValue</span>&lt;String&gt; &#123;</span><br><span class="line">    Windows(<span class="string">&quot;code_100&quot;</span>),</span><br><span class="line">    Linux(<span class="string">&quot;code_200&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String code;</span><br><span class="line"></span><br><span class="line">    OperateSys(String code) &#123;</span><br><span class="line">        <span class="built_in">this</span>.code = code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getCode</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getValue</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> getCode();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用EnumValues操作枚举</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">OperateSys</span> <span class="variable">os</span> <span class="operator">=</span> EnumValues.getEnum(OperateSys.class, <span class="string">&quot;code_100&quot;</span>);</span><br><span class="line">List&lt;OperateSys&gt; enums = EnumValues.getEnums(OperateSys.class, <span class="string">&quot;code_100&quot;</span>, <span class="string">&quot;code_200&quot;</span>);</span><br><span class="line">Map&lt;String, OperateSys&gt; valueMap = EnumValues.getValueMap(OperateSys.class);</span><br><span class="line">Set&lt;String&gt; valueSet = EnumValues.getValueSet(OperateSys.class);</span><br><span class="line"><span class="type">boolean</span> <span class="variable">b</span> <span class="operator">=</span> EnumValues.complyWith(OperateSys.class, <span class="string">&quot;code_300&quot;</span>); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<p>注册spring转换器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">DefaultConversionService</span> <span class="variable">service</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultConversionService</span>();</span><br><span class="line"><span class="type">ConverterRegistry</span> <span class="variable">registry</span> <span class="operator">=</span> service;</span><br><span class="line">EnumValues.registerEnumValueConverter(OperateSys.class, registry);</span><br><span class="line">service.canConvert(OperateSys.class, String.class); <span class="comment">// true</span></span><br><span class="line">service.canConvert(String.class, OperateSys.class); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Log"><a href="#Log" class="headerlink" title="Log"></a>Log</h2><h3 id="Logback日志扩展"><a href="#Logback日志扩展" class="headerlink" title="Logback日志扩展"></a>Logback日志扩展</h3><p>log4j中可以通过file-permissions配置日志文件拥有的系统权限</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">&quot;RollingFile&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.apache.log4j.RollingFileAppender&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">file</span> <span class="attr">value</span>=<span class="string">&quot;logs/app.log&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;file-permissions&quot;</span> <span class="attr">value</span>=<span class="string">&quot;600&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 其他配置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>而logback中没有此类配置，因此扩展Appender的RollingPolicy以实现</p>
+<p>如下使用AccessControlRollingFileAppender、AccessControlBasedRollingPolicy，在filePermissions结点中你可以使用数字或表达式配置日志文件权限</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">&quot;ROOT_WS&quot;</span> <span class="attr">class</span>=<span class="string">&quot;ws.spring.log.AccessControlRollingFileAppender&quot;</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">file</span>&gt;</span>$&#123;LOG_HOME&#125;/xxx.log<span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>$&#123;FILE_LOG_PATTERN&#125;<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">charset</span>&gt;</span>$&#123;LOG_CHARSET&#125;<span class="tag">&lt;/<span class="name">charset</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">&quot;ws.spring.log.AccessControlBasedRollingPolicy&quot;</span>&gt;</span></span><br><span class="line">           <span class="comment">&lt;!-- 扩展的属性，设置归档日志文件权限 --&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">filePermissions</span>&gt;</span>600<span class="tag">&lt;/<span class="name">filePermissions</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">       <span class="comment">&lt;!-- 扩展的属性，设置日志文件权限 --&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">filePermissions</span>&gt;</span>rw-------<span class="tag">&lt;/<span class="name">filePermissions</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Text"><a href="#Text" class="headerlink" title="Text"></a>Text</h2><h3 id="Escaper文本转义器"><a href="#Escaper文本转义器" class="headerlink" title="Escaper文本转义器"></a>Escaper文本转义器</h3><p>文本转义器，通过Escaper与Escape注解的组合，你可以自定义实现自己的转义器，通常用于在字符串类型的方法参数上进行转义。这可以使你无需在方法实现上额外处理参数</p>
+<p><strong>使用@EnableEscape开启Escaper支持</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableEscape</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringxApp</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(SpringxApp.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例：实现SqlEscape注解，来对参数进行转义，避免恶意参数造成sql注入</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Escaper</span> &#123;</span><br><span class="line"></span><br><span class="line">    String <span class="title function_">escape</span><span class="params">(String value)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SqlEscaper</span> <span class="keyword">implements</span> <span class="title class_">Escaper</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">escapeSqlValue</span><span class="params">(String value)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (StringUtils.hasText(value)) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="type">StringBuilder</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">char</span> c : value.toCharArray()) &#123;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="string">&#x27;_&#x27;</span> || c == <span class="string">&#x27;%&#x27;</span> || c == <span class="string">&#x27;\\&#x27;</span>) &#123;</span><br><span class="line">                    sb.append(<span class="string">&#x27;\\&#x27;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                sb.append(c);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> sb.toString();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">escape</span><span class="params">(String value)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> escapeSqlValue(value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.PARAMETER&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Escape(SqlEscaper.class)</span> <span class="comment">// 指明使用的转义器</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SqlEscape &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">CustomTextService</span> &#123;</span><br><span class="line">    String <span class="title function_">processMissEscape</span><span class="params">(<span class="meta">@SqlEscape</span> String value)</span>; <span class="comment">// &quot;abc_&quot; -&gt; &quot;abc\_&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Validation扩展"><a href="#Validation扩展" class="headerlink" title="Validation扩展"></a>Validation扩展</h2><p>扩展了常用的Validation校验注解，部分如下：</p>
+<ul>
+<li><p>@IPv4</p>
+<p>约束字符串为IPv4地址格式</p>
+</li>
+<li><p>@MAC</p>
+<p>约束字符串为MAC地址格式</p>
+</li>
+<li><p>@UUID</p>
+<p>约束字符串为UUID格式</p>
+</li>
+<li><p>@StringRange</p>
+<p>约束字符串的可选范围</p>
+<p>例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">aMethod</span><span class="params">(<span class="meta">@StringRange(&#123;&quot;aaa&quot;,&quot;bbb&quot;&#125;)</span> String str)</span> <span class="comment">// str值只能为&quot;aaa&quot;或&quot;bbb&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@EnumRange</p>
+<p>约束枚举值的可选范围</p>
+<p>例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="title class_">MyEnum</span> &#123;</span><br><span class="line">      <span class="comment">// 金木水火土</span></span><br><span class="line">      JIN,MU,SHUI,HUO,TU</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">aMethod</span><span class="params">(<span class="meta">@EnumRange(enumType = MyEnum.class, enums = &#123;&quot;JIN&quot;,&quot;MU&quot;,&quot;SHUI&quot;&#125;)</span> MyEnum param)</span> </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="树节点工具"><a href="#树节点工具" class="headerlink" title="树节点工具"></a>树节点工具</h2><p>对于实现前向结点接口的pojo，可以通过Nodes工具类来为其构建对应的树形数据结构</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ForwardNode</span>&lt;K&gt; &#123;</span><br><span class="line">	</span><br><span class="line">    K <span class="title function_">fetchKey</span><span class="params">()</span>; <span class="comment">// 获取当前结点的key</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    K <span class="title function_">fetchParentKey</span><span class="params">()</span>; <span class="comment">// 获取父结点的key</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是一个常见的部门表对应的结构体，每个部门的ID是唯一的</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@ToString</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Dept</span> <span class="keyword">implements</span> <span class="title class_">ForwardNode</span>&lt;String&gt; &#123;      </span><br><span class="line">    <span class="keyword">private</span> String deptId;</span><br><span class="line">    <span class="keyword">private</span> String deptName;</span><br><span class="line">    <span class="keyword">private</span> String parentDeptId;      </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">fetchKey</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> getDeptId();</span><br><span class="line">    &#125;      <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">fetchParentKey</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> getParentDeptId();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过Nodes工具类将一个部门集合转换成一颗部门树</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Dept&gt; depts = Arrays.asList(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Dept</span>(<span class="string">&quot;H1&quot;</span>, <span class="string">&quot;name1&quot;</span>, <span class="literal">null</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Dept</span>(<span class="string">&quot;H2-1&quot;</span>, <span class="string">&quot;name2-1&quot;</span>, <span class="string">&quot;H1&quot;</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Dept</span>(<span class="string">&quot;H2-2&quot;</span>, <span class="string">&quot;name2-2&quot;</span>, <span class="string">&quot;H1&quot;</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Dept</span>(<span class="string">&quot;H3&quot;</span>, <span class="string">&quot;name2-2&quot;</span>, <span class="string">&quot;H2-1&quot;</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Dept</span>(<span class="string">&quot;H4&quot;</span>, <span class="string">&quot;name2-2&quot;</span>, <span class="string">&quot;H2-2&quot;</span>));</span><br><span class="line"></span><br><span class="line">TreeNode&lt;Dept&gt; node = Nodes.transToSingleTree(depts);</span><br><span class="line">System.out.println(JacksonUtils.toJson(node));</span><br></pre></td></tr></table></figure>
+
+<p>输出将如下</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;identity&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;deptId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;H1&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;depName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;name1&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;children&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;identity&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;deptId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;H2-1&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;depName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;name2-1&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;parentDeptId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;H1&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;children&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;identity&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;deptId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;H3&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;depName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;name2-2&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;parentDeptId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;H2-1&quot;</span></span><br><span class="line">                    <span class="punctuation">&#125;</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;identity&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;deptId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;H2-2&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;depName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;name2-2&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;parentDeptId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;H1&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;children&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;identity&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;deptId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;H4&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;depName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;name2-2&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;parentDeptId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;H2-2&quot;</span></span><br><span class="line">                    <span class="punctuation">&#125;</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是上述操作可行的前提是根部门只有一个，否则你应该使用<code>Nodes.transformToTrees(depts)</code>方法来构建多棵部门树</p>
+<p>若pojo类未实现ForwardNode接口，可使用adapterTransToSingleTree方法，提供对应的Function接口来提取对应的key来进行树节点的构建</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 例</span></span><br><span class="line">TreeNode&lt;Dept&gt; node = Nodes.adapterTransToSingleTree(depts, Dept::getDeptId, Dept::getParentDeptId);</span><br></pre></td></tr></table></figure>
+
+<p>更多操作见<code>Nodes</code>具体实现</p>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="FormModel表单绑定"><a href="#FormModel表单绑定" class="headerlink" title="FormModel表单绑定"></a>FormModel表单绑定</h3><p>FormModel通常解决表单提交带有不同前缀相同后缀的参数绑定到java对象的痛点<br>假设有如下表单提交：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>参数值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>user.name</td>
+<td>WindShadow</td>
+</tr>
+<tr>
+<td>user.desc</td>
+<td>一名软件工程师</td>
+</tr>
+<tr>
+<td>city.name</td>
+<td>北京</td>
+</tr>
+<tr>
+<td>city.desc</td>
+<td>中国首都</td>
+</tr>
+</tbody></table>
+<p>你可以使用 FormModel 注解进行如下参数映射</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/from-model&quot;)</span></span><br><span class="line"><span class="keyword">public</span> RestResponse&lt;String&gt; <span class="title function_">formModelBind</span><span class="params">(<span class="meta">@FormModel</span> User user, <span class="meta">@FormModel</span> City city)</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>FormModel 不支持基础类型与其包装类的绑定以及String类型，因为使用<code>@RequestParam</code>注解就可以达到相同的效果</p>
+<h3 id="SimpleBodyEntity-单属性实体"><a href="#SimpleBodyEntity-单属性实体" class="headerlink" title="SimpleBodyEntity 单属性实体"></a>SimpleBodyEntity 单属性实体</h3><p>用于表示单一结构的对象，支持动态json key，常用于web环境中。在设计接口响应数据结构时，如果遇到仅需要响应一个仅有一个键值对的简单json结构时，如<code>&#123;&quot;name&quot;: &quot;tom&quot;&#125;</code>、<code>&#123;&quot;size&quot;:  100&#125;</code>、<code>&#123;&quot;flag&quot;:  true&#125;</code>等，往往key名称不同，为了避免定义过多的相似结构的pojo类，可以使用SimpleBodyEntity 来解决此问题，同理，也可用于接收request body中的数据。</p>
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/simple-body&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SimpleBodyEntityController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/request&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> RestResponse&lt;String&gt; <span class="title function_">simpleRequestBody</span><span class="params">(<span class="meta">@RequestBody</span> SimpleBodyEntity&lt;String&gt; reqBody)</span> &#123;</span><br><span class="line">        System.out.println(reqBody.getValue());</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/response&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> RestResponse&lt;SimpleBodyEntity&lt;String&gt;&gt; <span class="title function_">simpleResponseBody</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="string">&quot;tom&quot;</span>;</span><br><span class="line">        <span class="keyword">return</span> GlobalRest.SUCCESS.of(<span class="keyword">new</span> <span class="title class_">SimpleBodyEntity</span>&lt;&gt;(<span class="string">&quot;name&quot;</span>, name));</span><br><span class="line">        <span class="comment">// SimpleBodyEntity 将json序列化为 &#123;&quot;name&quot;: &quot;tom&quot;&#125; 置于RestResponse中</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+        </div>
+        <footer class="kratos-entry-footer clearfix">
+            <div class="footer-tag clearfix">
+                <div class="pull-date">
+                <span>最后编辑：2024-09-29</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by 浪客千风.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
