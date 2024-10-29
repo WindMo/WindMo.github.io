@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.windshadow.cn/images/avatar.png">
 <meta property="article:published_time" content="2021-11-21T03:43:28.106Z">
-<meta property="article:modified_time" content="2024-10-28T13:16:36.334Z">
+<meta property="article:modified_time" content="2024-10-29T16:38:25.915Z">
 <meta property="article:author" content="浪客千风">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://blog.windshadow.cn/images/avatar.png">
@@ -286,7 +286,7 @@
                     <i class="fa fa-edit"></i> 
                     
                     
-                        ~16.11K
+                        ~16.13K
                     
                     字
                 </li>
@@ -295,14 +295,14 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1730121396334"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1730219905915"></time> 前，其中的内容可能需要更新。
             </div>
             
             <hr />
             <p>此篇将全面领略一下<a target="_blank" rel="noopener" href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a>中提议的Bean Validation特性</p>
 <h2 id="Bean-Validation"><a href="#Bean-Validation" class="headerlink" title="Bean Validation"></a>Bean Validation</h2><p>Bean Validation是一种规范，为 JavaBean 和方法验证定义了一组元数据模型和 API 规范，而Hibernate Validator 目前来说应该算是最佳实现，Spring框架底层也依赖了Hibernate Validator。</p>
 <p>Bean Validation中核心概念之一是：“约束”（constraint），其提供了一系列用于约束JavaBean的属性的注解，</p>
-<p>位于javax.validation.constraints包下，使用这些注解和校验器(Validator)，我们可以很好的对JavaBean进行校验。</p>
+<p>位于javax.validation.constraints包下，使用这些注解和校验器(<code>javax.validation.Validator</code>)，我们可以很好的对JavaBean进行校验。</p>
 <p><img src="/./BeanValidation/constraints.png"></p>
 <h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p>定一个JavaBean</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ... lombok</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Email</span> <span class="comment">// 字符串约束为邮箱</span></span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -544,7 +544,7 @@ Bean ValidationBean Validation是一种规范，为 JavaBean 和方法验证定�
                     
                 </div>
                 <div class="pull-date">
-                <span>最后编辑：2024-10-28</span>
+                <span>最后编辑：2024-10-30</span>
                 </div>
             </div>
         </footer>
