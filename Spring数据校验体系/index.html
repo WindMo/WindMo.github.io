@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.windshadow.cn/images/avatar.png">
 <meta property="article:published_time" content="2024-10-27T16:24:24.538Z">
-<meta property="article:modified_time" content="2024-10-31T17:43:32.424Z">
+<meta property="article:modified_time" content="2024-11-01T15:20:59.909Z">
 <meta property="article:author" content="浪客千风">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://blog.windshadow.cn/images/avatar.png">
@@ -288,7 +288,7 @@
                     <i class="fa fa-edit"></i> 
                     
                     
-                        ~9.37K
+                        ~9.39K
                     
                     字
                 </li>
@@ -297,7 +297,7 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1730396612424"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1730474459909"></time> 前，其中的内容可能需要更新。
             </div>
             
             <hr />
@@ -380,9 +380,9 @@
 <p>改写如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Validated</span> <span class="comment">// 对spring bean 开启校验的aop代理</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/api/v2&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BeanValidatedController</span> &#123;</span><br><span class="line">    <span class="comment">// 此处web-mvc不支持对 email 的校验</span></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/query&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> RestResponse <span class="title function_">handler</span><span class="params">(<span class="meta">@RequestParam</span> <span class="meta">@Email</span> String email)</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这就意味着当我们对controller加以@Validated 注解修饰时，controller将得到校验的aop代理增强，同事由于web-mvc对参数绑定的校验支持，会同时有两套校验逻辑加在controller上。</p>
-<p>如果我们代码如下编写时，即如handler方法使用@Valid 修饰参数，会触发两次校验！</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Validated</span> <span class="comment">// 对spring bean 开启校验的aop代理</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/api/v2&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BeanValidatedController</span> &#123;</span><br><span class="line">    <span class="comment">// 对参数绑定开启校验</span></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/person&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> RestResponse <span class="title function_">handler</span><span class="params">(<span class="meta">@Valid</span> <span class="meta">@RequestBody</span> Person person)</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@PostMapping(&quot;/person2&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> RestResponse <span class="title function_">handler2</span><span class="params">(<span class="meta">@Validated</span> <span class="meta">@RequestBody</span> Person person)</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这就意味着当我们对controller加以@Validated 注解修饰时，controller将得到校验的aop代理增强，同时由于web-mvc对参数绑定的校验支持，会同时有两套校验逻辑加在controller上。</p>
+<p>如果我们代码如下编写时，即如badHandler方法使用@Valid 修饰参数，会触发两次校验！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Validated</span> <span class="comment">// 对spring bean 开启校验的aop代理</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/api/v2&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BeanValidatedController</span> &#123;</span><br><span class="line">    <span class="comment">// 对参数绑定开启校验</span></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/person-bad&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> RestResponse <span class="title function_">badHandler</span><span class="params">(<span class="meta">@Valid</span> <span class="meta">@RequestBody</span> Person person)</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@PostMapping(&quot;/person-good&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> RestResponse <span class="title function_">goodHandler</span><span class="params">(<span class="meta">@Validated</span> <span class="meta">@RequestBody</span> Person person)</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ol>
 <li><p>一次校验是web-mvc参数绑定过程的校验（开关为 @Valid）</p>
@@ -395,7 +395,7 @@
 </li>
 </ol>
 <p>两者的原理大不相同。</p>
-<p>故上述代码handler方法会触发两次校验，handler2仅触发web-mvc参数绑定过程的校验。</p>
+<p>故上述代码badHandler方法会触发两次校验，goodHandler仅触发web-mvc参数绑定过程的校验。</p>
 <hr>
 <p>到此Spring的数据校验体系的应用与部分原理介绍完毕。</p>
 
