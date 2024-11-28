@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.windshadow.cn/images/avatar.png">
 <meta property="article:published_time" content="2021-08-28T09:30:13.294Z">
-<meta property="article:modified_time" content="2024-08-12T17:11:51.702Z">
+<meta property="article:modified_time" content="2024-11-28T15:40:15.944Z">
 <meta property="article:author" content="浪客千风">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://blog.windshadow.cn/images/avatar.png">
@@ -288,7 +288,7 @@
                     <i class="fa fa-edit"></i> 
                     
                     
-                        ~13.61K
+                        ~13.62K
                     
                     字
                 </li>
@@ -297,7 +297,7 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1723482711702"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1732808415944"></time> 前，其中的内容可能需要更新。
             </div>
             
             <hr />
@@ -356,7 +356,7 @@
 <p>问：提交到第几个任务（i &#x3D; ?）时，线程池拒绝执行任务而抛出异常？</p>
 <p>答：i &#x3D; 31时。</p>
 <p>线程池可接受的最大任务数量为：最大线程数+工作队列容量&#x3D;30。上述每个任务都进行了一次长时间睡眠，显然for循环体积任务执行完之前，线程池内没有一个任务执行完。</p>
-<p>值得注意的是，控制台打印的“start run number: {n}”字符串，应该是1<del>10左右先被打印，其次是21</del>30后被打印，最后是11~20区间的数字被打印，而不是我们生活中任务认为的“先提交就先得到执行”。</p>
+<p>值得注意的是，控制台打印的“start run number: {n}”字符串，应该是1到10左右先被打印，其次是21到130后被打印，最后是11到120区间的数字被打印，而不是我们生活中任务认为的“先提交就先得到执行”。</p>
 <p>于是结合addWorker方法得出线程池<strong>提交优先级</strong>：</p>
 <p>核心线程 &gt; 工作队列 &gt; 非核心线程</p>
 <p>于是结合getTask方法得出线程池<strong>执行优先级</strong>：</p>
@@ -462,7 +462,7 @@
                     
                 </div>
                 <div class="pull-date">
-                <span>最后编辑：2024-08-13</span>
+                <span>最后编辑：2024-11-28</span>
                 </div>
             </div>
         </footer>
