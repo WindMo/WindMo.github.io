@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/avatar.png">
+  <title>SpringWeb异常处理 | 风的影子</title>
+  <meta name="author" content="浪客千风" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="此篇文章来浅析一下Spring Web异常处理机制； 在此之前来看一下一个有意思的请求用例 api与用例如下 123456789@RestControllerpublic class CustomController &#123;    @GetMapping(&quot;&#x2F;miss-param&quot;)    public RestResponse&lt;Void&gt; missParam">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringWeb异常处理">
+<meta property="og:url" content="https://blog.windshadow.cn/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">
+<meta property="og:site_name" content="风的影子">
+<meta property="og:description" content="此篇文章来浅析一下Spring Web异常处理机制； 在此之前来看一下一个有意思的请求用例 api与用例如下 123456789@RestControllerpublic class CustomController &#123;    @GetMapping(&quot;&#x2F;miss-param&quot;)    public RestResponse&lt;Void&gt; missParam">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta property="article:published_time" content="2025-06-19T14:19:15.431Z">
+<meta property="article:modified_time" content="2025-06-21T12:18:54.020Z">
+<meta property="article:author" content="浪客千风">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.windshadow.cn/images/avatar.png">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="/local-cdn/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="/local-cdn/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="/local-cdn/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="/local-cdn/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="/local-cdn/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="风的影子" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-book"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/ws-springx"><i class="fa fa-code" aria-hidden="true" /></i>ws-springx</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/warehouse"><i class="fa fa-star"></i>仓库</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/game"><i class="fa fa-gamepad"></i>游戏</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-link"></i>链接</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="https://blog.csdn.net/WindMo356">CSDN博客</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                                    
+                                        <li><a href="/wind"><i class="fa fa-paper-plane"></i>风</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">风的影子</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>风的影子</h2> <br />
+                        <span>千风</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+                        
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">且听风吟 御剑于心</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/Garbage-Collection/">Garbage Collection</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">Java多线程</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86/">Java线程池原理</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E7%89%B9%E9%A1%B9/">Java特项</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/MyBatis%E6%BA%90%E7%A0%81/">MyBatis源码</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySql/">MySql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%9F%BA%E7%A1%80/">web基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式与微服务</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/"><i class="fa  fa-book"></i> SpringWeb异常处理</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Spring%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C%E4%BD%93%E7%B3%BB/"><i class="fa  fa-book"></i> Spring数据校验体系</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/TLS%E8%AF%81%E4%B9%A6%E4%B8%8E%E8%87%AA%E7%AD%BEca/"><i class="fa  fa-book"></i> TLS证书与自签ca</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/BeanValidation/"><i class="fa  fa-book"></i> Bean Validation</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> JVM垃圾回收入门</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">SpringWeb异常处理</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2025-06-19</li>
+                <li><i class="fa fa-user"></i> 作者 浪客千风</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~4.88K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1750508334020"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+            <hr />
+            <p>此篇文章来浅析一下Spring Web异常处理机制；</p>
+<p>在此之前来看一下一个有意思的请求用例</p>
+<p>api与用例如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CustomController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/miss-param&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> RestResponse&lt;Void&gt; <span class="title function_">missParam</span><span class="params">(<span class="meta">@RequestParam(&quot;name&quot;)</span> String name)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> GlobalRest.SUCCESS.empty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/example.jpg"></p>
+<p>我们知道http请求时参数缺失时，一般是400状态码，明明请求接口存在，为何此处却是404呢？</p>
+<p>其实是因为笔者在spring容器中注册了这么一个bean：<code>ErrorController</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.boot.web.servlet.error.ErrorController;</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyErrorController</span> <span class="keyword">implements</span> <span class="title class_">ErrorController</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>正是这个bean导致了Spring Web的异常处理能力出现了“bug”，且来看看其如何运作。</p>
+<h2 id="HandlerExceptionResolver"><a href="#HandlerExceptionResolver" class="headerlink" title="HandlerExceptionResolver"></a>HandlerExceptionResolver</h2><p>Spring Web中通过<code>HandlerExceptionResolver</code>接口来处理请求中产生的异常，解析出一个<code>ModelAndView</code>，以给到客户端合适的响应。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">HandlerExceptionResolver</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Nullable</span></span><br><span class="line">	ModelAndView <span class="title function_">resolveException</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@Nullable</span> Object handler, Exception ex)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该接口的resolveException方法的实现约定为：</p>
+<ul>
+<li>如果返回的ModelAndView为null，说明此异常解析器无法解析此异常</li>
+<li>如果返回的ModelAndView不为null，说明异常已经处理，衍生出以下约定<ul>
+<li>若ModelAndView为空，即ModelAndView.isEmpty() &#x3D;&#x3D; true，说明异常不返回视图，例如只返回http状态码给到客户端</li>
+<li>若ModelAndView不为空，则要返回视图，即找到对应的视图，响应http正文给到客户端</li>
+</ul>
+</li>
+</ul>
+<p>以下是异常解析器在<code>DispatcherServlet</code>中的调用时机;</p>
+<p>可以debug查看<code>DispatcherServlet</code>源码方法调用链，这里直接给出：</p>
+<p><code>DispatcherServlet#doXXX</code>  -&gt; <code>DispatcherServlet#processRequest</code> -&gt; <code>DispatcherServlet#doService</code> -&gt; <code>DispatcherServlet#doDispatch</code> -&gt; <code>DispatcherServlet#processDispatchResult </code> -&gt; <code>DispatcherServlet#processHandlerException</code></p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/handlerInDisServlet.jpg"></p>
+<p>从HandlerExceptionResolver的约定和源码中可以看出，HandlerExceptionResolver在框架内部可以配置多个，DispatcherServlet会根据配置顺序找到可用的解析器（返回的<code>ModelAndView</code>不为null）。</p>
+<p>在<code>DispatcherServlet#processDispatchResult </code>方法中可以看到，<code>DispatcherServlet</code>在拿到视图后会尝试进行渲染</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/render-err-view.jpg"></p>
+<p>大致流程如下</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/DispatcherServlet%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.png"></p>
+<h3 id="HandlerExceptionResolver配置"><a href="#HandlerExceptionResolver配置" class="headerlink" title="HandlerExceptionResolver配置"></a>HandlerExceptionResolver配置</h3><p>既然<code>HandlerExceptionResolver</code>最终交给了<code>DispatcherServlet</code>，那么来看看<code>DispatcherServlet</code>何时初始化了<code>HandlerExceptionResolver</code>。</p>
+<p>从源码中可以看出以下初始化机制：</p>
+<p>spring容器加载完毕时初始化各个组件，即也初始化了<code>HandlerExceptionResolver</code></p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/DisServlet-init.jpg"></p>
+<p>从容器中获取<code>HandlerExceptionResolver</code>的bean</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/DisServlet-init-handler.jpg"></p>
+<p>而在spring mvc中，<code>WebMvcConfigurationSupport</code>是mvc的通用配置，其往容器中也注册了一个<code>HandlerExceptionResolver</code>bean；</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/mvc-config.jpg"></p>
+<p>可以看出，此配置类先尝试从容器中所配置的<code>WebMvcConfigurer</code>bean，获取配置<code>HandlerExceptionResolver</code>配置，如果未获取到则使用默认的配置。</p>
+<p>默认配置：<code>ExceptionHandlerExceptionResolver</code> 、<code>ResponseStatusExceptionResolver</code> 、<code>DefaultHandlerExceptionResolver</code> </p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/default-config.jpg"></p>
+<p>值得注意的是这里使用了<code>HandlerExceptionResolverComposite</code>将解析器整合成了一个<code>HandlerExceptionResolver</code>bean。</p>
+<p>于是可以总结出以下流程初始化流程</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/HandlerExceptionResolver%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B.png"></p>
+<p>另外，<code>DispatcherServlet</code>从容器中获取到的异常解析器，除了<code>WebMvcConfigurationSupport</code>提供的以外，还有<code>ErrorMvcAutoConfiguration</code>自动装配提供的<code>DefaultErrorAttributes</code>，其不提供视图，仅记录异常信息（实现了<code>ErrorAttributes</code>接口）</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/ErrorAutoConfig.jpg"></p>
+<h2 id="ErrorPage"><a href="#ErrorPage" class="headerlink" title="ErrorPage"></a>ErrorPage</h2><p>默认的<code>HandlerExceptionResolver</code>有三个且顺序如下：</p>
+<ul>
+<li><p><code>ExceptionHandlerExceptionResolver</code></p>
+<p>该异常解析器提供对<code>@ExceptionHandler</code>注解的支持，通常内部自主处理异常，返回空ModelAndView（无需定向到视图页面）</p>
+</li>
+<li><p><code>ResponseStatusExceptionResolver</code></p>
+<p>该异常解析器提供对ResponseStatusException异常和<code>@ResponseStatus</code>注解的支持，内部调用response.sendError设置http状态码，返回空ModelAndView（无需定向到视图页面）</p>
+</li>
+<li><p><code>DefaultHandlerExceptionResolver</code></p>
+<p>该异常解析器提供了spring web中常见的<code>ServletException</code>的子类异常的处理支持，比如将<code>HttpRequestMethodNotSupportedException</code>异常处理为405响应等。内部调用response.sendError设置国际化消息，返回空ModelAndView（无需定向到视图页面）</p>
+</li>
+</ul>
+<p>可以看到上述这三个默认的异常解析器都不返回视图，且分为了两种处理方式：</p>
+<ul>
+<li>异常解析器内部自行写入响应（<code>ExceptionHandlerExceptionResolver</code>）</li>
+<li>异常解析器通过response.sendError发送（通知）异常</li>
+</ul>
+<p>前者很好理解，如通常使用<code>@ExceptionHandler</code>注解返回一个pojo以json形式写入response.body，那后者具有什么作用呢？</p>
+<p>参考<code>HttpServletResponse.sendError</code>的注释可以知道，调用该方法是向response通知异常，在后续流程中web容器会寻找error页面响应给客户端。</p>
+<p>根据笔者的debug，这段逻辑在tomcat中的<code>org.apache.catalina.core.StandardHostValve</code>的invoke方法中</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/tomcat-invoke.jpg"></p>
+<p>往后调用status方法，获取error页</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/custom-error-page.jpg"></p>
+<p>调用custom方法将请求转发到error页</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/forward-error-page.jpg"></p>
+<p>即流程如下：</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/StandardHostValve%E5%A4%84%E7%90%86error%E9%A1%B5.png"></p>
+<p>在默认情况下，ErrorPage的路径为“&#x2F;error”</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/error-location.jpg"></p>
+<p>回到最初提及的<code>ErrorController</code>，spring boot中其默认实现为<code>BasicErrorController</code>。其通过<code>ErrorMvcAutoConfiguration</code>注册到spring中（见源码）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;$&#123;server.error.path:$&#123;error.path:/error&#125;&#125;&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BasicErrorController</span> <span class="keyword">extends</span> <span class="title class_">AbstractErrorController</span> &#123;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而在<code>BasicErrorController</code>提供了对<code>/error</code>的响应支持：</p>
+<ul>
+<li>errorHtml：若客户端请求的资源是页面，则返回error页面</li>
+<li>error：若客户端请求的资源不是页面，则将异常信息写入response.body</li>
+</ul>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/BasicErrorController.jpg"></p>
+<p>这里用的就是<code>ErrorMvcAutoConfiguration</code>提供的<code>DefaultErrorAttributes</code>来对异常信息进行读取。</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/DefaultErrorAttributes%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6.png"></p>
+<p>其中读取异常信息时，由server.error开头的配置觉得读取异常的哪些信息（见<code>ErrorProperties</code>配置类）。</p>
+<p>到此，算是对spring的异常处理有了比较全面的认识。</p>
+<p>回到开头的请求用例。笔者注册了一个<code>ErrorController</code>bean，于是默认的<code>BasicErrorController</code>将不会再注册，当请求发生异常时，根据流程，tomcat会将请求转发到”&#x2F;error”，由于web容器中不存在此地址，所以最终响应便是404。</p>
+<h2 id="ResponseEntityExceptionHandler"><a href="#ResponseEntityExceptionHandler" class="headerlink" title="ResponseEntityExceptionHandler"></a>ResponseEntityExceptionHandler</h2><p>在如今的开发潮流下，java spring作为后端更多是提供rest的数据接口，而非提供静态资源和html页面。</p>
+<p>在默认<code>ErrorController</code>中，若是处理rest请求的异常时，通常结构体如下</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;timestamp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2025-06-21T11:59:14.359+00:00&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">400</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;error&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Bad Request&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/miss-param&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果我们想自定义响应结构该如何做呢？</p>
+<p>对于异常处理，最适宜的方式应该是<code>@ExceptionHandler</code>注解的方式，其不仅支持和controller一样的参数自动转换和绑定，书写以及后期扩展起来比明显自定义实现一个<code>ErrorController</code>更加方便。</p>
+<p>那么我们知道，在web mvc 框架中，如对于参数不存在或者请求方法不支持（Get方式请求Post接口）等场景，其设计了对应的异常类型。如果我们自己通过<code>@ExceptionHandler</code>注解挨个声明处理这些框架内的异常类型岂不是非常累人。</p>
+<p>于是，spring提供了这些框架内部异常类型的注解处理的模版，便是<code>org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler</code>；</p>
+<p>我们只要继承此类就可通过重写方法的方式实现自定义的异常处理逻辑。</p>
+<p><img src="/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/ResponseEntityExceptionHandler.jpg"></p>
+<p>到此完结！</p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://blog.windshadow.cn/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://blog.windshadow.cn/SpringWeb%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/";
+            const title         = "「SpringWeb异常处理」";
+            const excerpt       = `此篇文章来浅析一下Spring Web异常处理机制；
+在此之前来看一下一个有意思的请求用例
+api与用例如下
+123456789@RestControllerpublic class CustomController &#123;  ...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2025-06-21</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Spring数据校验体系" href="//Spring数据校验体系/">&lt; 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        <li><a href="mailto:wsmtp@foxmail.com"><i class="fa fa-envelope"></i></a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/WindMo"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2025 风的影子 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by 浪客千风.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="/local-cdn/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="/local-cdn/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async type="text/javascript" src="/js/snow.min.js"></script>
+    </div>
+
+<script async src="/js/candy.min.js"></script>
+
+
+    <script defer src="/local-cdn/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="/local-cdn/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
